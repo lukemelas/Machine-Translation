@@ -16,6 +16,7 @@ parser.add_argument('--lr', default=2e-3, type=int, metavar='N', help='learning 
 parser.add_argument('--hs', default=100, type=int, metavar='N', help='size of hidden state')
 parser.add_argument('--nlayers', default=1, type=int, metavar='N', help='number of layers in rnn')
 parser.add_argument('--maxnorm', default=1.0, type=float, metavar='N', help='maximum gradient norm for clipping')
+parser.add_argument('--dropout', default=0.0, type=float, metavar='N', help='dropout probability')
 parser.add_argument('-v', default=1000, type=int, metavar='N', help='vocab size')
 parser.add_argument('--data', default='./data', help='path to data')
 parser.add_argument('-b', default=10, type=int, metavar='N', help='batch size')
@@ -37,7 +38,7 @@ def main():
   
   # Create model
   embedding = TEXT.vocab.vectors.clone()
-  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt)
+  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout)
   model = BigramModel(train_iter, TEXT)
   
   # Load pretrained model 
