@@ -4,10 +4,11 @@ from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
 class BigramModel(nn.Module):
-  def __init__(self, train_iter, vocab_size, alpha=0.5, beta=0.5):
+  def __init__(self, train_iter, TEXT, alpha=0.5, beta=0.5):
     super(BigramModel, self).__init__()
-    self.vocab_size = vocab_size 
+    self.vocab_size = len(TEXT.vocab)
     self.num_layers = self.hidden_size = 0
+    self.param = torch.nn.Parameter(torch.FloatTensor(1))
     
     # Set up unigrams, bigrams counters
     self.unigram_dict = torch.zeros(self.vocab_size)

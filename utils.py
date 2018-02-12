@@ -1,18 +1,35 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+import torchtext
+from torchtext.vocab import Vectors, GloVe
 import itertools, os 
 use_gpu = torch.cuda.is_available()
 
-import itertools, os, datetime
+def preprocess(datafile, vocab_size, batch_size, bptt_len):
+  '''Loads data from text files into iterators and builds word embeddings'''
+  train_file = os.path.join(datafile, 'train.txt')
+  valid_file = os.path.join(datafile, 'valid.txt')
+
+  # Create datasets
+  TEXT = torchtext.data.Field()
+  train, val, test = torchtext.datasets.LanguageModelingDataset.splits(path=".", 
+    train=train_file, validation=valid_file, test=valid_file, text_field=TEXT)
+  
+  # Create vocab, iterator, and word embeddings
+  TEXT.build_vocab(train, max_size=vocab_size)
+  train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits( (train, val, test), batch_size=batch_size, device=-1, bptt_len=bptt_len, repeat=False)
+  TEXT.vocab.load_vectors('fasttext.simple.300d')
+
+  return TEXT, train_iter, val_iter
 
 class Logger():  
   def __init__(self):
     '''Create new log file'''
     j = 0
-    while os.path.exists('log-{}.log'.format(j)):
+    while os.path.exists('saves/log-{}.log'.format(j)):
       j += 1
-    self.fname = 'log-{}.log'.format(j)
+    self.fname = 'saves/log-{}.log'.format(j)
     
   def log(self, info, stdout=True):
     '''Print to log file and standard output'''

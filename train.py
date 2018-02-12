@@ -10,7 +10,7 @@ def detach(states):
   '''Helpful function for backprop'''
   return tuple(state.detach() for state in states)
 
-def train_model(train_iter, val_iter, model, criterion, max_norm=1.0, num_epochs=2, logger=None):  
+def train_model(train_iter, val_iter, model, criterion, optimizer, TEXT, max_norm=1.0, num_epochs=2, logger=None):  
   model.train()
   for epoch in range(num_epochs):
     
@@ -23,7 +23,7 @@ def train_model(train_iter, val_iter, model, criterion, max_norm=1.0, num_epochs
 
     # Validate model
     best_losses = 0
-    val_losses = validate_model(val_iter, model, criterion, logger)
+    val_losses = validate_model(val_iter, model, criterion, TEXT, logger)
     if val_losses < best_losses:
       # torch.save(model.state_dict(), 'model-{}.pkl'.format(datetime.datetime.now().strftime("%m-%d-%H-%M-%S")))
       best_losses = val_losses 

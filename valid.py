@@ -4,11 +4,11 @@ from torch.autograd import Variable
 import itertools, os, datetime
 use_gpu = torch.cuda.is_available()
 
-def validate_model(val_iter, model, criterion, logger=None):
+def validate_model(val_iter, model, criterion, TEXT, logger=None):
   model.eval()
   
   # Initial states for LSTM
-  batch_size = train_iter.batch_size
+  batch_size = val_iter.batch_size
   num_layers, hidden_size = model.num_layers, model.hidden_size
   init = Variable(torch.zeros(num_layers, batch_size, hidden_size), requires_grad=False)
   init = init.cuda() if use_gpu else init
