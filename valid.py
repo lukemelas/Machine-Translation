@@ -48,9 +48,10 @@ def validate_model(val_iter, model, criterion, TEXT, logger=None):
     loss_total += loss.data[0]
   
   # Log information after validation
-  loss_avg = loss_total / words_total * val_iter.batch_size
+  loss_avg = loss_total / len(val_iter) 
   map_avg = map_total / words_total
+  ppl = torch.exp(torch.FloatTensor([loss_avg]))[0]
   info = 'Validation complete. MAP: {map:.3f}, \t Loss: {loss:.3f}, \t Sorta-Perplexity: {perplexity:.3f}'.format(
-      map=map_avg, loss=loss_avg, perplexity=torch.exp(torch.FloatTensor([loss_avg]))[0])
+      map=map_avg, loss=loss_avg, perplexity=ppl)
   logger.log(info) if logger is not None else print(info)
-  return map_avg
+  return ppl
