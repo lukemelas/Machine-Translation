@@ -38,7 +38,7 @@ def main():
   
   # Create model
   embedding = TEXT.vocab.vectors.clone()
-  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt)
+  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout)
   #model = BigramModel(train_iter, TEXT)
   
   # Load pretrained model 

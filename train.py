@@ -24,7 +24,6 @@ def train_model(train_iter, val_iter, model, criterion, optimizer, TEXT, max_nor
 
     # Validate model
     val_ppl = validate_model(val_iter, model, criterion, TEXT, logger)
-    print(val_ppl, best_ppl, val_ppl < best_ppl)
     if val_ppl < best_ppl:
       #torch.save(model.state_dict(), 'model-{}.pkl'.format(datetime.datetime.now().strftime("%m-%d-%H-%M-%S")))
       torch.save(model.state_dict(), 'saves/model-best.pkl')
@@ -49,8 +48,8 @@ def train_model(train_iter, val_iter, model, criterion, optimizer, TEXT, max_nor
       optimizer.step()
 
       # Zero hidden state with certain probability
-      if (torch.rand(1)[0] < 0.05):
-        states = (init.clone(), init.clone())      
+      if (torch.rand(1)[0] < 0.95):
+        states = (init.clone(), init.clone())
 
       # Log information
       losses += loss.data[0]
