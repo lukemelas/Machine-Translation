@@ -16,6 +16,7 @@ parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learnin
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state')
 parser.add_argument('--nlayers', default=1, type=int, metavar='N', help='number of layers in rnn')
 parser.add_argument('--maxnorm', default=1.0, type=float, metavar='N', help='maximum gradient norm for clipping')
+parser.add_argument('--dropout', default=0.0, type=float, metavar='N', help='dropout probability')
 parser.add_argument('-v', default=1000, type=int, metavar='N', help='vocab size')
 parser.add_argument('--data', default='./data', help='path to data')
 parser.add_argument('-b', default=10, type=int, metavar='N', help='batch size')
@@ -48,8 +49,8 @@ def main():
 
   # Create loss function and optimizer
   criterion = nn.CrossEntropyLoss()
-  #optimizer = torch.optim.Adam(model.parameters(), lr=args.lr) 
-  optimizer = torch.optim.Adamax(model.parameters())
+  optimizer = torch.optim.Adam(model.parameters(), lr=args.lr) 
+  #optimizer = torch.optim.Adamax(model.parameters())
   
   # Create logger and log hyperparameters
   logger = Logger()
