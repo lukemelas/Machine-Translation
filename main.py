@@ -7,7 +7,7 @@ import torchtext
 from train import train_model
 from valid import validate_model
 from utils import Logger, sample, preprocess, predict
-from models.rnn_new import RNNLM
+from models.rnn import RNNLM
 from models.bigram import BigramModel
 
 parser = argparse.ArgumentParser(description='Language Model')
@@ -15,6 +15,7 @@ parser.add_argument('--model', metavar='DIR', default=None, help='path to model'
 parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learning rate')
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state')
 parser.add_argument('--nlayers', default=1, type=int, metavar='N', help='number of layers in rnn')
+parser.add_argument('--no-wt', dest='wt', action='store_false', help='disable weight tying in network')
 parser.add_argument('--maxnorm', default=1.0, type=float, metavar='N', help='maximum gradient norm for clipping')
 parser.add_argument('--dropout', default=0.0, type=float, metavar='N', help='dropout probability')
 parser.add_argument('-v', default=1000, type=int, metavar='N', help='vocab size')
@@ -25,7 +26,7 @@ parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number 
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='run model only on validation set')
 parser.add_argument('-p', '--predict', dest='predict', action='store_true', help='save predictions on final input data')
 parser.add_argument('--sample', default=0, type=int, help='number of sentences to sample')
-parser.set_defaults(evaluate=False, predict=False)
+parser.set_defaults(wt=True, evaluate=False, predict=False)
 
 def main():
   global args
@@ -38,7 +39,7 @@ def main():
   
   # Create model
   embedding = TEXT.vocab.vectors.clone()
-  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout)
+  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout, args.wt)
   #model = BigramModel(train_iter, TEXT)
   
   # Load pretrained model 
@@ -49,7 +50,7 @@ def main():
 
   # Create loss function and optimizer
   criterion = nn.CrossEntropyLoss()
-  optimizer = torch.optim.Adam(model.parameters(), lr=args.lr) 
+  optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
   #optimizer = torch.optim.Adamax(model.parameters())
   
   # Create logger and log hyperparameters
