@@ -4,7 +4,7 @@ from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
 class BigramModel(nn.Module):
-  def __init__(self, train_iter, TEXT, alpha=0.5, beta=0.5):
+  def __init__(self, train_iter, TEXT, alpha=0.05, beta=0.05):
     super(BigramModel, self).__init__()
     self.vocab_size = len(TEXT.vocab)
     self.num_layers = self.hidden_size = 0
