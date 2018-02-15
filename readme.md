@@ -19,7 +19,7 @@ optional arguments:
   -b N             batch size
   --bptt N         backprop though time length (sequence length)
   --epochs N       number of epochs
-  --bigram         use bigram language model
+  --ngram          use ngram language model
   -e, --evaluate   run model only on validation set
   -p, --predict    save predictions on final input data
   --sample SAMPLE  number of sentences to sample

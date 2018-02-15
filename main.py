@@ -8,7 +8,7 @@ from train import train_model
 from valid import validate_model
 from utils import Logger, sample, preprocess, predict
 from models.rnn import RNNLM
-from models.bigram import BigramModel
+from models.ngram import NgramModel
 
 parser = argparse.ArgumentParser(description='Language Model')
 parser.add_argument('--model', metavar='DIR', default=None, help='path to model')
@@ -23,11 +23,11 @@ parser.add_argument('--data', default='./data', help='path to data')
 parser.add_argument('-b', default=10, type=int, metavar='N', help='batch size')
 parser.add_argument('--bptt', default=32, type=int, metavar='N', help='backprop though time length (sequence length)')
 parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number of epochs')
-parser.add_argument('--bigram', dest='bigram', action='store_true', help='use bigram language model')
+parser.add_argument('--ngram', dest='ngram', action='store_true', help='use ngram language model')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='run model only on validation set')
 parser.add_argument('-p', '--predict', dest='predict', action='store_true', help='save predictions on final input data')
 parser.add_argument('--sample', default=0, type=int, help='number of sentences to sample')
-parser.set_defaults(wt=True, bigram=False, evaluate=False, predict=False)
+parser.set_defaults(wt=True, ngram=False, evaluate=False, predict=False)
 
 def main():
   global args
@@ -40,8 +40,8 @@ def main():
   
   # Create model
   embedding = TEXT.vocab.vectors.clone()
-  if args.bigram: 
-    model = BigramModel(train_iter, TEXT)
+  if args.ngram: 
+    model = NgramModel(train_iter, TEXT)
   else:
     model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout, args.wt) 
 
@@ -67,7 +67,7 @@ def main():
     '''.format(m=model, o=optimizer, lr=args.lr, hs=args.hs, nl=args.nlayers, mn=args.maxnorm, v=args.v), stdout=False)
     
   # Train or validate model 
-  if args.evaluate or args.bigram:
+  if args.evaluate or args.ngram:
     validate_model(val_iter, model, criterion, TEXT, logger=logger)
     if args.predict:
       predict(model, args.data, TEXT)
@@ -78,7 +78,7 @@ def main():
   # Sample from model
   if args.sample is not 0:
     for _ in range(args.sample):
-      sent = sample(model)
+      sent = sample(model, TEXT)
       print(sent)
 
   # Save predictions

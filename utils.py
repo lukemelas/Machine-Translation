@@ -38,7 +38,7 @@ class Logger():
     if stdout:
       print(info)
 
-def sample(model, max_sample_length=20):
+def sample(model, TEXT, max_sample_length=20):
   model.eval()
   
   # Initial states for LSTM
