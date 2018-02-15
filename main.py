@@ -18,15 +18,16 @@ parser.add_argument('--nlayers', default=1, type=int, metavar='N', help='number 
 parser.add_argument('--no-wt', dest='wt', action='store_false', help='disable weight tying in network')
 parser.add_argument('--maxnorm', default=1.0, type=float, metavar='N', help='maximum gradient norm for clipping')
 parser.add_argument('--dropout', default=0.0, type=float, metavar='N', help='dropout probability')
-parser.add_argument('-v', default=1000, type=int, metavar='N', help='vocab size')
+parser.add_argument('-v', default=10000, type=int, metavar='N', help='vocab size')
 parser.add_argument('--data', default='./data', help='path to data')
 parser.add_argument('-b', default=10, type=int, metavar='N', help='batch size')
 parser.add_argument('--bptt', default=32, type=int, metavar='N', help='backprop though time length (sequence length)')
 parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number of epochs')
+parser.add_argument('--bigram', dest='bigram', action='store_true', help='use bigram language model')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='run model only on validation set')
 parser.add_argument('-p', '--predict', dest='predict', action='store_true', help='save predictions on final input data')
 parser.add_argument('--sample', default=0, type=int, help='number of sentences to sample')
-parser.set_defaults(wt=True, evaluate=False, predict=False)
+parser.set_defaults(wt=True, bigram=False, evaluate=False, predict=False)
 
 def main():
   global args
@@ -39,9 +40,11 @@ def main():
   
   # Create model
   embedding = TEXT.vocab.vectors.clone()
-  model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout, args.wt)
-  #model = BigramModel(train_iter, TEXT)
-  
+  if args.bigram: 
+    model = BigramModel(train_iter, TEXT)
+  else:
+    model = RNNLM(embedding, args.hs, args.nlayers, args.bptt, args.dropout, args.wt) 
+
   # Load pretrained model 
   if args.model is not None and os.path.isfile(args.model):
     model.load_state_dict(torch.load(args.model))
@@ -51,7 +54,6 @@ def main():
   # Create loss function and optimizer
   criterion = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
-  #optimizer = torch.optim.Adamax(model.parameters())
   
   # Create logger and log hyperparameters
   logger = Logger()
@@ -63,10 +65,9 @@ def main():
     max_norm: {mn}
     vocab size: {v}
     '''.format(m=model, o=optimizer, lr=args.lr, hs=args.hs, nl=args.nlayers, mn=args.maxnorm, v=args.v), stdout=False)
-  
     
   # Train or validate model 
-  if args.evaluate:
+  if args.evaluate or args.bigram:
     validate_model(val_iter, model, criterion, TEXT, logger=logger)
     if args.predict:
       predict(model, args.data, TEXT)
