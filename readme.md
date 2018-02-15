@@ -1,6 +1,7 @@
 ## LSTM for Language Modeling
 
 This repository contains an implementation of a LSTM model for language modeling on the Penn Treebank database. More details on LSTM network architectures for state of the art language models may be found in (On the State of the Art of Evaluation in Neural Language Models)[https://arxiv.org/abs/1707.05589].                                                                      
+
 To train our model, clone the repo and run `main.py`:
 ```
 usage: main.py [-h] [--model DIR] [--lr N] [--hs N] [--nlayers N] [--no-wt]
@@ -25,6 +26,7 @@ optional arguments:
 ```
 
 For example, we found the following hyperparameters worked well:
+
 ``` python main.py -b 128 --bptt 64 --epochs 20 --nlayers 2 ```
 
 
