@@ -1,6 +1,7 @@
 # Custom
 .vector_cache/
 saves/
+.data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
