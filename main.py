@@ -38,7 +38,7 @@ def main():
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
     embedding_src = torch.FloatTensor(len(SRC.vocab), args.emb)
     embedding_trg = torch.FloatTensor(len(TRG.vocab), args.emb)
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp) 
+    model = Seq2seq(SRC, TRG, embedding_src, embedding_trg, args.hs, args.nlayers, args.dp) 
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):
@@ -47,7 +47,7 @@ def main():
     model = model.cuda() if use_gpu else model
 
     # Create loss function and optimizer
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.NLLLoss() 
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
     scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
   

@@ -21,9 +21,9 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         # Validate model
         bleu_val = validate_model(val_iter, model, criterion, SRC, TRG, logger)
         if bleu_val > bleu_best:
-            logger.save(model.state_dict())
             bleu_best = bleu_val
-            print('New best: {}'.format(bleu_best))
+            logger.save(model.state_dict())
+            logger.log('New best: {}'.format(bleu_best))
     
         # Train model
         losses = AverageMeter()
@@ -34,10 +34,10 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
             # Forward, backprop, optimizer
             model.zero_grad()
-            outputs, states = model(src, trg)
-            outputs = outputs.view(outputs.size(0) * outputs.size(1), outputs.size(2))
-            targets = targets.view(outputs.size(0))
-            loss = criterion(outputs, targets) 
+            probs = model(src, trg)
+            probs = probs.view(probs.size(0) * probs.size(1), probs.size(2))
+            trg = trg.view(probs.size(0))
+            loss = criterion(probs, trg) 
             loss.backward()
             torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
             optimizer.step()

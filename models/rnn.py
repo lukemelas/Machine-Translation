@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
-class RNNLM(nn.Module):
+class Encoder(nn.Module):
   def __init__(self, embedding, hidden_size, num_layers, bptt_len, dropout, weight_tying):
     super(RNNLM, self).__init__()
     self.num_layers = num_layers
