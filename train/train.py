@@ -1,62 +1,50 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-import itertools, os, datetime
+import itertools, os, sys
+sys.path.append('../')
 use_gpu = torch.cuda.is_available()
 
-from valid import validate_model
+import validate
+from utils.utils import AverageMeter
 
-def detach(states):
-  '''Helpful function for backprop'''
-  return tuple(state.detach() for state in states)
-
-def train_model(train_iter, val_iter, model, criterion, optimizer, TEXT, max_norm=1.0, num_epochs=2, logger=None):  
-  model.train()
-  best_ppl = 1000
-  for epoch in range(num_epochs):
+def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG, num_epochs, logger=None):  
     
-    # Initial states for LSTM
-    batch_size = train_iter.batch_size
-    num_layers, hidden_size = model.num_layers, model.hidden_size
-    init = Variable(torch.zeros(num_layers, batch_size, hidden_size))
-    init = init.cuda() if use_gpu else init
-    states = (init, init.clone())
-
-    # Validate model
-    val_ppl = validate_model(val_iter, model, criterion, TEXT, logger)
-    if val_ppl < best_ppl:
-      #torch.save(model.state_dict(), 'model-{}.pkl'.format(datetime.datetime.now().strftime("%m-%d-%H-%M-%S")))
-      torch.save(model.state_dict(), 'saves/model-best.pkl')
-      best_ppl = val_ppl
-      print('New best: {}'.format(best_ppl))
+    # Iterate through epochs
+    ppl_best = 1000
+    for epoch in range(num_epochs):
     
-    # Train model
-    losses = 0
-    for i, batch in enumerate(train_iter): 
-      text = batch.text.cuda() if use_gpu else batch.text
-      targets = batch.target.cuda() if use_gpu else batch.target
+        # Step learning rate scheduler
+        scheduler.step()
 
-      # Forward, backprop, optimizer
-      model.zero_grad()
-      states = detach(states)
-      outputs, states = model(text, states)
-      outputs = outputs.view(outputs.size(0) * outputs.size(1), outputs.size(2))
-      targets = targets.view(outputs.size(0))
-      loss = criterion(outputs, targets) 
-      loss.backward()
-      torch.nn.utils.clip_grad_norm(model.parameters(), max_norm)
-      optimizer.step()
+        # Validate model
+        ppl_val = validate_model(val_iter, model, criterion, TEXT, logger)
+        if ppl_val < ppl_best:
+            logger.save(model.state_dict())
+            ppl_best = ppl_val
+            print('New best: {}'.format(best_ppl))
+    
+        # Train model
+        losses = AverageMeter()
+        model.train()
+        for i, batch in enumerate(train_iter): 
+            src = batch.src.cuda() if use_gpu else batch.src
+            trg = batch.trg.cuda() if use_gpu else batch.trg
 
-      # Zero hidden state with certain probability
-      if (torch.rand(1)[0] < 0.95):
-        states = (init.clone(), init.clone())
+            # Forward, backprop, optimizer
+            model.zero_grad()
+            outputs, states = model(src, trg)
+            outputs = outputs.view(outputs.size(0) * outputs.size(1), outputs.size(2))
+            targets = targets.view(outputs.size(0))
+            loss = criterion(outputs, targets) 
+            loss.backward()
+            torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
+            optimizer.step()
 
-      # Log information
-      losses += loss.data[0]
-      log_freq = 1000
-      if i % log_freq == 10:
-        losses_for_log = losses / (i)
-        info = 'Epoch [{epochs}/{num_epochs}], Batch [{batch}/{num_batches}], Loss: {loss:.3f}, Sorta-Perplexity: {perplexity:.3f}'.format(
-            epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), loss=losses_for_log, perplexity=torch.exp(torch.FloatTensor([losses_for_log]))[0])
-        logger.log(info) if logger is not None else print(info)
-        torch.save(model.state_dict(), 'saves/model.pkl')
+        # Log information
+        if i % 1000 == 10:
+            logger.log('''Epoch [{epochs}/{num_epochs}]
+                       Batch [{batch}/{num_batches}]
+                       Loss: {losses.avg:.3f}
+                       Perplexity: {ppl:.3f}
+                       '''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses, ppl=0.0)

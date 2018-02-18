@@ -4,8 +4,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torchtext
 
-from train import train, validate
-from utils.utils import Logger, AverageMeter, predict
+from train import train, validate, predict
+from utils.utils import Logger, AverageMeter
 from utils.preprocess import preprocess
 from models import Seq2seq
 
@@ -21,8 +21,7 @@ parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number 
 parser.add_argument('--model', metavar='DIR', default=None, help='path to model')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions')
-parser.add_argument('--predict_dir', metavar='DIR', default='data/preds.txt', help='file to output final predictions')
-
+parser.add_argument('--predict_outfile', metavar='DIR', default='data/preds.txt', help='file to output final predictions')
 parser.set_defaults(evaluate = False)
 
 def main():
@@ -51,17 +50,17 @@ def main():
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
     scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
   
-    # Create logger and log hyperparameters
+    # Create logger/saver and log hyperparameters
     logger = Logger()
     logger.log('ARGS: {}, MODEL, {}'.format(args, model), stdout=False)    
     
     # Train, validate, or predict
     if args.predict is not None:
-        predict(model, args.predict, args.predict_out, SRC, TRG)
+        predict(model, args.predict, args.predict_outfile, SRC, TRG)
     elif args.evaluate:
-        validate(val_iter, model, criterion, SRC, TRG, logger=logger)
+        validate(val_iter, model, criterion, SRC, TRG, logger)
     else:
-        train(train_iter, val_iter, model, criterion, optimizer, TEXT, max_norm=args.maxnorm, num_epochs=args.epochs, logger=logger)
+        train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, num_epochs, logger)
 
   return
 

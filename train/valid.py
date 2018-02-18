@@ -5,22 +5,12 @@ import itertools, os, datetime
 use_gpu = torch.cuda.is_available()
 
 def validate_model(val_iter, model, criterion, TEXT, logger=None):
-  model.eval()
+    model.eval()
   
-  # Initial states for LSTM
-  batch_size = val_iter.batch_size
-  num_layers, hidden_size = model.num_layers, model.hidden_size
-  init = Variable(torch.zeros(num_layers, batch_size, hidden_size), requires_grad=False)
-  init = init.cuda() if use_gpu else init
-  states = (init, init.clone())
+    # Iterate over words in validation batch. 
+    losses = AverageMeter()
 
-  # Compute mean average precision table for k=20
-  map_list = [sum(1/(j+1) for j in range(i,20)) for i in range(20)]
-  map_matrix = torch.FloatTensor(map_list)
-  map_matrix = map_matrix.cuda() if use_gpu else map_matrix
-        
-  # Iterate over words in validation batch. Note that a Variable from val_iter is volatile.
-  loss_total = 0
+loss_total = 0
   map_total = 0
   words_total = 0
   for i, batch in enumerate(val_iter):
