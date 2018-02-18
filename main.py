@@ -1,4 +1,5 @@
-import argparse, os
+import argparse, os, datetime
+
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -50,9 +51,11 @@ def main():
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
     scheduler = MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
   
-    # Create logger/saver and log hyperparameters
-    logger = Logger()
-    logger.log('ARGS: {}, MODEL, {}'.format(args, model), stdout=False)    
+    # Create directory for logs, create logger, log hyperparameters
+    path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
+    os.makedirs(path, exists_ok=True)
+    logger = Logger(path)
+    logger.log('ARGS: {}, MODEL, {}'.format(args, model), stdout=False)
     
     # Train, validate, or predict
     if args.predict is not None:
