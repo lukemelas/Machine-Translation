@@ -7,8 +7,7 @@ use_gpu = torch.cuda.is_available()
 def predict(model, datafile, TEXT, print_preds=False, fname='preds.txt'):
     raise NotImplementedError()
 
-
- ''' 
+    print(''' 
   FROM LANGUAGE MODELING  
 
   model.eval()
@@ -44,5 +43,5 @@ def predict(model, datafile, TEXT, print_preds=False, fname='preds.txt'):
       # For debugging: print our predictions 
       if print_preds and i < 10:
         print('{}  --> {}'.format(line, ', '.join([TEXT.vocab.itos[i] for i in preds])))
-'''
+''')
 

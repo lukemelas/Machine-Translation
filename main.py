@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torchtext
 
-from train import train, validate, predict
+from training import train, valid, predict
 from utils.utils import Logger, AverageMeter
 from utils.preprocess import preprocess
 from models import Seq2seq
@@ -65,7 +65,7 @@ def main():
     else:
         train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, num_epochs, logger)
 
-  return
+    return
 
 if __name__ == '__main__':
-  main()
+    main()

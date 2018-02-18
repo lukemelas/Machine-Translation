@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
-import validate
+from .valid import validate
 from utils.utils import AverageMeter
 
 def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG, num_epochs, logger=None):  
@@ -47,5 +47,4 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             logger.log('''Epoch [{epochs}/{num_epochs}]
                        Batch [{batch}/{num_batches}]
                        Loss: {losses.avg:.3f}
-                       Perplexity: {ppl:.3f}
-                       '''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses, ppl=0.0)
+                       '''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses))

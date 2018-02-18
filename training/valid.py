@@ -46,4 +46,4 @@ def validate(val_iter, model, criterion, SRC, TGT, logger):
   
         # Log information after validation
         logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
-	return bleu.avg
+        return bleu.avg
