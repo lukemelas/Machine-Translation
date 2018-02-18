@@ -1,8 +1,9 @@
+import itertools, os, sys
+sys.path.append('../')
+
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-import itertools, os, sys
-sys.path.append('../')
 use_gpu = torch.cuda.is_available()
 
 import validate
@@ -11,18 +12,18 @@ from utils.utils import AverageMeter
 def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG, num_epochs, logger=None):  
     
     # Iterate through epochs
-    ppl_best = 1000
+    bleu_best = -1
     for epoch in range(num_epochs):
     
         # Step learning rate scheduler
         scheduler.step()
 
         # Validate model
-        ppl_val = validate_model(val_iter, model, criterion, TEXT, logger)
-        if ppl_val < ppl_best:
+        bleu_val = validate_model(val_iter, model, criterion, SRC, TRG, logger)
+        if bleu_val > bleu_best:
             logger.save(model.state_dict())
-            ppl_best = ppl_val
-            print('New best: {}'.format(best_ppl))
+            bleu_best = bleu_val
+            print('New best: {}'.format(bleu_best))
     
         # Train model
         losses = AverageMeter()
