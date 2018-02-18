@@ -64,7 +64,6 @@ def main():
         validate(val_iter, model, criterion, SRC, TRG, logger)
     else:
         train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, num_epochs, logger)
-
     return
 
 if __name__ == '__main__':
