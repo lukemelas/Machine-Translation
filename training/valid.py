@@ -21,7 +21,9 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         nothing = Variable(torch.zeros(trg.size()), requires_grad=False).long() # no ground truth
         nothing = nothing.cuda() if use_gpu else nothing
         sents = model(src, nothing) # use beam search, output a list of lists of word indices
-
+        
+        print(sents[2])
+        
         # Prepare sentences for moses multi-bleu script
         out_sentences = []
         ref_sentences = []

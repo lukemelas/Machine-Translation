@@ -106,8 +106,8 @@ class Seq2seq(nn.Module):
 
                     #print('scores.size(): ', scores.size())
 
-                    ### !!! BE CAREFUL HERE IF INCREASING BATCH SIZE -- NEED TO SOFTMAX OVER VOCAB ONLY
-                    probs = torch.nn.functional.softmax(scores) # 1 x bs x vs
+                    ### !!! NEED UPGRADED PYTORCH -- NEED TO SOFTMAX OVER VOCAB ONLY
+                    probs = scores # torch.nn.functional.softmax(scores, dim=2) # 1 x bs x vs
                     #print('probs.size(): ', probs.size())
 
                     # Set next word to word with highest prob (argmax)
