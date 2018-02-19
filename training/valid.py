@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
-from utils.utils import moses_multi_bleu
+from utils.utils import moses_multi_bleu, AverageMeter
 
 def validate(val_iter, model, criterion, SRC, TGT, logger):
     model.eval()
@@ -18,7 +18,8 @@ def validate(val_iter, model, criterion, SRC, TGT, logger):
         trg = batch.trg.cuda() if use_gpu else batch.trg
 
         # Forward. Model returns best sentence from beam search
-        nothing = trg.copy().zero_() # no ground truth
+        nothing = Variable(torch.zeros(trg.size()), requires_grad=False).long() # no ground truth
+        nothing = nothing.cuda() if use_gpu else nothing
         sents,  = model(src, nothing) # use beam search, output a list of lists of word indices
 
         # Prepare sentences for moses multi-bleu script

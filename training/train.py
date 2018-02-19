@@ -19,7 +19,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         scheduler.step()
 
         # Validate model
-        bleu_val = validate_model(val_iter, model, criterion, SRC, TRG, logger)
+        bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
         if bleu_val > bleu_best:
             bleu_best = bleu_val
             logger.save(model.state_dict())

@@ -7,10 +7,11 @@ from .Encoder import EncoderLSTM
 from .Decoder import DecoderLSTM
 
 class Seq2seq(nn.Module):
-    def __init__(self, SRC, TRG, embedding_src, embedding_trg, h_dim, num_layers, dropout_p):
+    def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, start_token_index=0):
         super(Seq2seq, self).__init__()
         self.h_dim = h_dim
         self.vocab_size = embedding_trg.size(0)
+        self.start_token_index = start_token_index
 
         # Create encoder and decoder
         self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p)
@@ -49,29 +50,55 @@ class Seq2seq(nn.Module):
             for i in range(h_e_outs.size(1)): # loop over batches
             
                 # Input hidden state is last state of encoder
-                h_d_state = h_e_outs[:,i,:].unsqueeze(1) # make bs = 1
-
+                h_e_final0 = h_e_final[0][:,i,:].unsqueeze(1).contiguous()
+                h_e_final1 = h_e_final[1][:,i,:].unsqueeze(1).contiguous()
+                h_d_state = (h_e_final0, h_e_final1) # make bs = 1
+                
+                print('h_e_final[0].size(): ', h_e_final[0].size())
+                print('h_e_final[1].size(): ', h_e_final[1].size())
+                print('h_d_state[0].size(): ', h_d_state[0].size())
+                print('h_d_state[1].size(): ', h_d_state[1].size())
+                
                 # Create initial starting word '<s>'
-                word = torch.LongTensor([TRG.vocab.stoi['<s>']] * h_d_state.size(1)).view(1, -1) # 1 x bs
-                sent = [TRG.vocab.stoi['<s>']] # will store indices of words in sentence
-            
+                word = torch.LongTensor([self.start_token_index] * h_d_state[0].size(1)).view(1, -1) # 1 x bs
+                word = Variable(word, requires_grad=False)
+                word = word.cuda() if use_gpu else word
+                
+                # Create list to hold our sentence
+                sent = [self.start_token_index] # will store indices of words in sentence
+
                 # Loop through sentence, ending when '</s>' or length 30 is reached
                 for i in range(30): 
                 
+                    print('word: ', word, '\nsent: ', sent) 
+                    
                     # Pass through decoder (batch size 1)
                     h_d_out, h_d_state = self.decoder(word, h_d_state)
+
+                    print('h_d_out.size(): ', h_d_out.size())
+                    print('h_d_state[0].size(): ', h_d_state[0].size()) 
+                    print('h_d_state[1].size(): ', h_d_state[1].size()) 
                 
                     # Use attention to compute context
-                    context = h_d_state # 1 x bs x h_dim
-                    h_d_concat = torch.cat((h_d_state, context), dim=1) # 1 x bs x 2 * h_dim
+                    context = h_d_out # 1 x bs x h_dim
+                    h_d_concat = torch.cat((h_d_out, context), dim=2) # 1 x bs x 2 * h_dim
+
+                    print('h_d_concat.size():, ', h_d_concat.size())
+                    print('self.linear1:, ', self.linear1)
 
                     # Pass through linear for probabilities
                     scores = self.linear1(h_d_concat) # 1 x bs x h_dim
                     scores = self.linear2(scores) # 1 x bs x vs
-                    probs = torch.nn.functional.softmax(scores, dim=2) # 1 x bs x vs
+
+                    print('scores.size(): ', scores.size())
+
+                    probs = torch.nn.functional.softmax(scores, 2) # 1 x bs x vs
+                    print('probs.size(): ', probs.size())
 
                     # Get argmax for next word
                     prob, nextword = torch.max(probs, dim=2) # 1 x bs, 1 x bs
+
+                    print('prob: ', prob, '\nnextword: ', nextword)
                     
                     # Set next word to word with highest prob
                     word = Variable(nextword, requires_grad=False)
@@ -80,8 +107,10 @@ class Seq2seq(nn.Module):
                     # Add word to current sentence
                     sent.append(nextword[0,0])
 
+                    print('sent: ', sent)
+
                     # End translation if next word is '<s>'
-                    if nextword[0,0] is TRG.vocab.stoi['<s>'] or i is 29:
+                    if nextword[0,0] is start_token_index or i is 29:
                         sents.append(sent)
                         i = 30 # break out of loop -- stop translating this sentence
             

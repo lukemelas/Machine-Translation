@@ -37,7 +37,7 @@ def main():
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
     embedding_src = torch.FloatTensor(len(SRC.vocab), args.emb)
     embedding_trg = torch.FloatTensor(len(TRG.vocab), args.emb)
-    model = Seq2seq(SRC, TRG, embedding_src, embedding_trg, args.hs, args.nlayers, args.dp) 
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, start_token_index=TRG.vocab.stoi['<s>']) 
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):
@@ -58,11 +58,11 @@ def main():
     
     # Train, validate, or predict
     if args.predict is not None:
-        predict(model, args.predict, args.predict_outfile, SRC, TRG)
+        predict.predict(model, args.predict, args.predict_outfile, SRC, TRG)
     elif args.evaluate:
-        validate(val_iter, model, criterion, SRC, TRG, logger)
+        valid.validate(val_iter, model, criterion, SRC, TRG, logger)
     else:
-        train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, args.epochs, logger)
+        train.train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, args.epochs, logger)
     return
 
 if __name__ == '__main__':

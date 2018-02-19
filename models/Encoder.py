@@ -21,8 +21,10 @@ class EncoderLSTM(nn.Module):
         # Embed text 
         x = self.embedding(x)
 
-        # Create initial hidden state of zeros: 2 * nlayers x batch size x hidden dim
-        h0 = Variable(torch.zeros(2 * self.nlayers, x.size(1), self.h_dim), requires_grad=False)
+        # Create initial hidden state of zeros: 2-tuple of num_layers x batch size x hidden dim
+        init = Variable(torch.zeros(self.num_layers, x.size(1), self.h_dim), requires_grad=False)
+        init = init.cuda() if use_gpu else init
+        h0 = (init, init.clone())
 
         # Pass through LSTM
         out, h = self.lstm(x, h0) # maybe have to pad now?
