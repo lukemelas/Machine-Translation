@@ -92,25 +92,26 @@ class Seq2seq(nn.Module):
 
                     print('scores.size(): ', scores.size())
 
-                    probs = torch.nn.functional.softmax(scores, 2) # 1 x bs x vs
+                    probs = torch.nn.functional.softmax(scores) # 1 x bs x vs
+                    ### !!! BE CAREFUL HERE IF INCREASING BATCH SIZE -- NEED TO SOFTMAX OVER VOCAB ONLY
                     print('probs.size(): ', probs.size())
 
                     # Get argmax for next word
-                    prob, nextword = torch.max(probs, dim=2) # 1 x bs, 1 x bs
-
-                    print('prob: ', prob, '\nnextword: ', nextword)
+                    prob, word = torch.max(probs, dim=2) # 1 x bs, 1 x bs
+                    
+                    word_index = word[0,0].data[0]
+                    print('prob: ', prob, '\nword_index: ', word_index)
                     
                     # Set next word to word with highest prob
-                    word = Variable(nextword, requires_grad=False)
-                    word = word.cuda() if use_gpu else word
+                    print('word: ', word, '\nword.requires_grad: ', word.requires_grad)
 
                     # Add word to current sentence
-                    sent.append(nextword[0,0])
+                    sent.append(word_index)
 
                     print('sent: ', sent)
 
                     # End translation if next word is '<s>'
-                    if nextword[0,0] is start_token_index or i is 29:
+                    if word_index is self.start_token_index or i is 29:
                         sents.append(sent)
                         i = 30 # break out of loop -- stop translating this sentence
             
@@ -124,8 +125,6 @@ class Seq2seq(nn.Module):
             
 
     
-# SCRAP
-# Create initial decoder hidden state
-#state = self.decoder.init_hidden(src.size(1)) # batch size 1
-#state = state.cuda() if use_gpu else state
+# TODO
+# - Implement beam search
 
