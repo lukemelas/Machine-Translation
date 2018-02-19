@@ -6,7 +6,7 @@ use_gpu = torch.cuda.is_available()
 class DecoderLSTM(nn.Module):
     def __init__(self, embedding, h_dim, num_layers, dropout_p=0.0):
         super(DecoderLSTM, self).__init__()
-        self.vocab_size, self.embedding_size = embedding_size()
+        self.vocab_size, self.embedding_size = embedding.size()
         self.num_layers = num_layers
         self.h_dim = h_dim
         self.dropout_p = dropout_p

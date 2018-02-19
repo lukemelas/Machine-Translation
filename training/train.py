@@ -34,10 +34,10 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
             # Forward, backprop, optimizer
             model.zero_grad()
-            probs = model(src, trg)
-            probs = probs.view(probs.size(0) * probs.size(1), probs.size(2))
-            trg = trg.view(probs.size(0))
-            loss = criterion(probs, trg) 
+            scores = model(src, trg)
+            scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
+            trg = trg.view(scores.size(0))
+            loss = criterion(scores, trg) 
             loss.backward()
             torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
             optimizer.step()

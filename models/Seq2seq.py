@@ -3,11 +3,14 @@ import torch.nn as nn
 from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
-from Encoder import EncoderLSTM
-from Decoder import DecoderLSTM
+from .Encoder import EncoderLSTM
+from .Decoder import DecoderLSTM
 
 class Seq2seq(nn.Module):
     def __init__(self, SRC, TRG, embedding_src, embedding_trg, h_dim, num_layers, dropout_p):
+        super(Seq2seq, self).__init__()
+        self.h_dim = h_dim
+        self.vocab_size = embedding_trg.size(0)
 
         # Create encoder and decoder
         self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p)
@@ -18,7 +21,6 @@ class Seq2seq(nn.Module):
         self.linear2 = nn.Linear(self.h_dim, self.vocab_size)
         if False and self.decoder.embedding.weight.size().equals(linear2.weight.size()): # weight tying
             self.linear2.weight = self.decoder.embedding.weight
-        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, src, trg):
         
@@ -36,10 +38,9 @@ class Seq2seq(nn.Module):
             h_d_concat = torch.cat((h_d_final, context), dim=2) # sl x bs x 2 * h_dim
 
             # Pass through linear for probabilities
-            probs = self.linear1(h_d_concat) # sl x bs x 2 * h_dim 
-            probs = self.linear2(probs) # sl x bs x h_dim
-            probs = self.softmax(probs) # sl x bs x vs
-            return probs
+            scores = self.linear1(h_d_concat) # sl x bs x 2 * h_dim 
+            scores = self.linear2(scores) # sl x bs x h_dim
+            return scores
 
         else: # use beam search to find best sentence
             sents = []
@@ -65,9 +66,9 @@ class Seq2seq(nn.Module):
                     h_d_concat = torch.cat((h_d_state, context), dim=1) # 1 x bs x 2 * h_dim
 
                     # Pass through linear for probabilities
-                    probs = self.linear1(h_d_concat) # 1 x bs x h_dim
-                    probs = self.linear2(probs) # 1 x bs x vs
-                    probs = self.softmax(probs) # 1 x bs x vs
+                    scores = self.linear1(h_d_concat) # 1 x bs x h_dim
+                    scores = self.linear2(scores) # 1 x bs x vs
+                    probs = torch.nn.functional.softmax(scores, dim=2) # 1 x bs x vs
 
                     # Get argmax for next word
                     prob, nextword = torch.max(probs, dim=2) # 1 x bs, 1 x bs

@@ -5,7 +5,7 @@ import spacy
 import itertools, os
 use_gpu = torch.cuda.is_available()
 
-def preprocess(vocab_size, batch_size, max_sent_len=20):
+def preprocess(vocab_size, batchsize, max_sent_len=20):
     '''Loads data from text files into iterators'''
 
     # Load text tokenizers
@@ -36,9 +36,9 @@ def preprocess(vocab_size, batch_size, max_sent_len=20):
         EN.build_vocab(train.trg, min_freq=5, max_size=vocab_size)
     else:
         DE.build_vocab(train.src, min_freq=5)
-        EN.build_vocab(train.trg, min_freq=5
+        EN.build_vocab(train.trg, min_freq=5)
 
     # Create iterators to process text in batches of approx. the same length
-    train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=batch_size, device=-1, repeat=False, sort_key=lambda x: len(x.src))
-
+    train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=batchsize, device=-1, repeat=False, sort_key=lambda x: len(x.src))
+    
     return DE, EN, train_iter, val_iter
