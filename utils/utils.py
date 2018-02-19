@@ -66,8 +66,8 @@ def moses_multi_bleu(outputs, references, lw=False):
         try: 
             bleu_out = subprocess.check_output(bleu_cmd, stdin=read_pred, stderr=subprocess.STDOUT)
             bleu_out = bleu_out.decode('utf-8')
-            print(bleu_out)
-            bleu_score = float(re.search(r'BLEU = (.+?)', bleu_out).group(1))
+            #print(bleu_out)
+            bleu_score = float(re.search(r'BLEU = (.+?),', bleu_out).group(1))
         except subprocess.CalledProcessError as error:
             print(error)
             raise Exception('Something wrong with bleu script')

@@ -19,14 +19,11 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         scheduler.step()
 
         # Validate model
-        bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
-
-        print('BLEU: {}'.format(bleu_val))
-
-        if bleu_val > bleu_best:
-            bleu_best = bleu_val
-            logger.save_model(model.state_dict())
-            logger.log('New best: {}'.format(bleu_best))
+        #bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
+        #if bleu_val > bleu_best:
+        #    bleu_best = bleu_val
+        #    #logger.save_model(model.state_dict())
+        #    logger.log('New best: {}'.format(bleu_best))
     
         # Train model
         losses = AverageMeter()
@@ -34,20 +31,28 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         for i, batch in enumerate(train_iter): 
             src = batch.src.cuda() if use_gpu else batch.src
             trg = batch.trg.cuda() if use_gpu else batch.trg
+            
+            #print('scr: ', src)
+            #print('trg: ', trg)
 
             # Forward, backprop, optimizer
             model.zero_grad()
             scores = model(src, trg)
+
+            #print('scores: ', scores)
+            #print('trg: ', trg)
+
             scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
             trg = trg.view(scores.size(0))
+
             loss = criterion(scores, trg) 
+
+            #print('loss: ', loss)
+
             loss.backward()
             torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
             optimizer.step()
 
         # Log information
-        if i % 1000 == 10:
-            logger.log('''Epoch [{epochs}/{num_epochs}]
-                       Batch [{batch}/{num_batches}]
-                       Loss: {losses.avg:.3f}
-                       '''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses))
+        if True: # i % 1000 == 10:
+            logger.log('''Epoch [{epochs}/{num_epochs}]\t Batch [{batch}/{num_batches}]\t Loss: {losses.avg:.3f}'''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses))

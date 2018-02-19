@@ -38,15 +38,15 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         
         # Run moses multi-bleu script
 
-        print('out_sentences: ', out_sentences)
-        print('ref_sentences: ', ref_sentences)
+        #print('out_sentences: ', out_sentences)
+        #print('ref_sentences: ', ref_sentences)
 
-        out_sentences = ['The dog is my favorite animal.', 'The brown snake is not yellow'] # DEBUG
-        ref_sentences = ['The cat is my favorite animal.', 'The yellow snake is not brown'] # DEBUG
+        #out_sentences = ['The dog is my favorite animal.', 'The brown snake is not yellow'] # DEBUG
+        #ref_sentences = ['The cat is my favorite animal.', 'The yellow snake is not brown'] # DEBUG
 
         batch_bleu = moses_multi_bleu(out_sentences, ref_sentences)
         bleu.update(batch_bleu)
   
-        # Log information after validation
-        logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
-        return bleu.avg
+    # Log information after validation
+    logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
+    return bleu.avg
