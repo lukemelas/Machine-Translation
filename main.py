@@ -32,7 +32,7 @@ def main():
 
     # Load and process data
     SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
-    print('Loaded data')
+    print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
   
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
     embedding_src = torch.FloatTensor(len(SRC.vocab), args.emb)

@@ -34,9 +34,12 @@ class Seq2seq(nn.Module):
             # Pass through decoder with teacher forcing
             h_d_outs, h_d_final = self.decoder(trg, h_e_final) # sl x bs x h_dim, _
 
+            print('h_d_outs.size(): ', h_d_outs.size())
+            print('h_d_outs[-1].size(): ', h_d_outs[-1].size())
+
             # Generate context with attention
-            context = h_d_final
-            h_d_concat = torch.cat((h_d_final, context), dim=2) # sl x bs x 2 * h_dim
+            context = h_d_outs
+            h_d_concat = torch.cat((h_d_outs, context), dim=2) # sl x bs x 2 * h_dim
 
             # Pass through linear for probabilities
             scores = self.linear1(h_d_concat) # sl x bs x 2 * h_dim 
@@ -115,7 +118,7 @@ class Seq2seq(nn.Module):
                         sents.append(sent)
                         i = 30 # break out of loop -- stop translating this sentence
             
-            
+            return sents
             
             
             

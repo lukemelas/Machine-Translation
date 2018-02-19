@@ -20,9 +20,12 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Validate model
         bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
+
+        print('BLEU: {}'.format(bleu_val))
+
         if bleu_val > bleu_best:
             bleu_best = bleu_val
-            logger.save(model.state_dict())
+            logger.save_model(model.state_dict())
             logger.log('New best: {}'.format(bleu_best))
     
         # Train model

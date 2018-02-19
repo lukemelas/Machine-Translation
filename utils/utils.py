@@ -1,10 +1,11 @@
+import itertools, os, re
+import tempfile, subprocess
+
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-import itertools, os 
-import tempfile, subprocess
 use_gpu = torch.cuda.is_available()
 
 class Logger():
@@ -22,8 +23,8 @@ class Logger():
         print(info)
     
     def save_model(self, model_dict):
-        with open(os.path.join(self.path, 'model.pkl'), 'w') as f:
-            torch.save(f, model_dict)
+        #with open(os.path.join(self.path, 'model.pkl'), 'w') as f:
+        torch.save(model_dict, os.path.join(self.path, 'model.pkl'))
 
 
 class AverageMeter():
@@ -59,14 +60,17 @@ def moses_multi_bleu(outputs, references, lw=False):
     
     # Use moses multi-bleu script
     with open(out_file.name, 'r') as read_pred:
-        lowercase = ' -lc' if lw else ''
-        bleu_cmd = '../scripts/multi-bleu.perl' + lowercase + [ref_file.name] 
+        bleu_cmd = ['scripts/multi-bleu.perl']
+        bleu_cmd = bleu_cmd + ['-lc'] if lw else bleu_cmd
+        bleu_cmd = bleu_cmd + [ref_file.name]
         try: 
-            bleu_out = subprocess.check_output(blau_cmd, stdin=read_pred, stderr=subprocess.STDOUT)
+            bleu_out = subprocess.check_output(bleu_cmd, stdin=read_pred, stderr=subprocess.STDOUT)
             bleu_out = bleu_out.decode('utf-8')
+            print(bleu_out)
             bleu_score = float(re.search(r'BLEU = (.+?)', bleu_out).group(1))
         except subprocess.CalledProcessError as error:
             print(error)
+            raise Exception('Something wrong with bleu script')
             bleu_score = 0.0
     
     # Close temporary files

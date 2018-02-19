@@ -3,6 +3,7 @@ python -m spacy download en
 python -m spacy download de
 wget "https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/generic/multi-bleu.perl"
 mv multi-bleu.perl scripts/
+chmod 755 scripts/multi-bleu.perl
 
 # # Create smaller dataset for working
 # ls -la .data/iwslt/de-en
