@@ -10,7 +10,7 @@ class Seq2seq(nn.Module):
     def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, start_token_index=0):
         super(Seq2seq, self).__init__()
         self.h_dim = h_dim
-        self.vocab_size_trg = embedding_trg.size(0)
+        self.vocab_size = embedding_trg.size(0)
         self.start_token_index = start_token_index
 
         # Create encoder and decoder
@@ -19,106 +19,64 @@ class Seq2seq(nn.Module):
 
         # Create linear layers to combine context and hidden state
         self.linear1 = nn.Linear(2 * self.h_dim, self.h_dim)
-        self.linear2 = nn.Linear(self.h_dim, self.vocab_size_trg)
-
-        # Weight tying
+        self.linear2 = nn.Linear(self.h_dim, self.vocab_size)
         if False and self.decoder.embedding.weight.size().equals(linear2.weight.size()): # weight tying
             self.linear2.weight = self.decoder.embedding.weight
-
-    def attention(self, out_d, out_e):
-        return out_d
 
     def forward(self, src, trg):
         
         # Pass through encoder
-        out_e, final_e = self.encoder(src)
-        
-        # Pass through decoder
-        out_d, final_d = self.decoder(trg, final_e)
+        h_e_outs, h_e_final = self.encoder(src)
 
-        # Apply attention
-        context = self.attention(out_d, out_e)
-        out_cat = torch.cat((out_d, context), dim=2) 
+        # When training, process entire batch at once
+        if self.training:
 
-        # Pass through linear layers to predict next word and return word probabilities
-        x = self.linear1(out_cat)
-        x = self.linear2(x)
+            # Pass through decoder with teacher forcing
+            h_d_outs, h_d_final = self.decoder(trg, h_e_final) # sl x bs x h_dim, _
 
-        # Debug: print first sentence src, trg, and pred
-        probs, m = self.max()
+            #print('h_d_outs.size(): ', h_d_outs.size())
+            #print('h_d_outs[-1].size(): ', h_d_outs[-1].size())
 
+            #if self.debug_counter < 2:
+            #    print('h_d_outs: ', h_d_outs)
+            #    print('h_d_final: ', h_d_final)
 
+            # Generate context with attention
+            context = h_d_outs
+            h_d_concat = torch.cat((h_d_outs, context), dim=2) # sl x bs x 2 * h_dim
 
+            # Pass through linear for probabilities
+            scores = self.linear1(h_d_concat) # sl x bs x 2 * h_dim 
+            scores = self.linear2(scores) # sl x bs x h_dim
 
+            # debug debug
+            #score, word = torch.max(scores, dim=2)
+            #print(word.data)
+            # debug debug
 
+            return scores
 
-        return x
+        else: # use beam search to find best sentence
+            sents = []
 
-        
-    def predict(self, src):
-        return []
-
-        # Store predictions: list of len bs of items of size sl x vs
-        preds = []
-        sents = []
-
-        print('trg.size(): ', trg.size())
-
-        # Do sequentially so that batch size = 1
-        for i in range(h_e_outs.size(1)): # loop through each item in batch
+            # Do sequentially so that batch size = 1
+            for i in range(h_e_outs.size(1)): # loop over batches
             
-            # Input hidden state is last state of encoder
-            h_e_final0 = h_e_final[0][:,i,:].unsqueeze(1).contiguous()
-            h_e_final1 = h_e_final[1][:,i,:].unsqueeze(1).contiguous()
-            h_d_state = (h_e_final0, h_e_final1) # make bs = 1
+                # Input hidden state is last state of encoder
+                h_e_final0 = h_e_final[0][:,i,:].unsqueeze(1).contiguous()
+                h_e_final1 = h_e_final[1][:,i,:].unsqueeze(1).contiguous()
+                h_d_state = (h_e_final0, h_e_final1) # make bs = 1
                 
-            #print('h_e_final[0].size(): ', h_e_final[0].size())
-            #print('h_e_final[1].size(): ', h_e_final[1].size())
-            #print('h_d_state[0].size(): ', h_d_state[0].size())
-            #print('h_d_state[1].size(): ', h_d_state[1].size())
+                #print('h_e_final[0].size(): ', h_e_final[0].size())
+                #print('h_e_final[1].size(): ', h_e_final[1].size())
+                #print('h_d_state[0].size(): ', h_d_state[0].size())
+                #print('h_d_state[1].size(): ', h_d_state[1].size())
                 
-            # Create initial starting word '<s>'
-            word = torch.LongTensor([self.start_token_index] * h_d_state[0].size(1)).view(1, -1) # 1 x bs
-            word = Variable(word, requires_grad=False)
-            word = word.cuda() if use_gpu else word
-
-            all_preds = []
-            
-            if self.training:
-
-                for j in range(trg.size(0)): # loop through words in sentence
-
-                    # Set the next word to the next true word
-                    word = trg[j,i].view(1,1) # 1 x bs = 1 x 1
-
-                    print('word.size(): ', word.size())
-
-                    # Pass through decoder
-                    h_d_out, h_d_state = self.decoder(word, h_d_state)
-
-                    # Use attention to compute context
-                    context = h_d_out # 1 x bs x h_dim
-                    h_d_concat = torch.cat((h_d_out, context), dim=2) # 1 x bs x 2 * h_dim
-
-                    #print('h_d_concat.size():, ', h_d_concat.size())
-                    #print('self.linear1:, ', self.linear1)
-
-                    # Pass through linear for probabilities
-                    scores = self.linear1(h_d_concat) # 1 x bs x h_dim
-                    scores = self.linear2(scores) # 1 x bs x vs
-
-                    print('scores.size(): ', scores.size())
-
-                    # Add scores to list
-                    preds.append(scores)
-
-                # Concatenate predictions into single tensor
-                preds = torch.cat(preds, dim=0)
-
-                all_preds.append(preds)
-
-           
-            else: 
+                # Create initial starting word '<s>'
+                word = torch.LongTensor([self.start_token_index] * h_d_state[0].size(1)).view(1, -1) # 1 x bs
+                word = Variable(word, requires_grad=False)
+                word = word.cuda() if use_gpu else word
+                
                 # Create list to hold our sentence
                 sent = [self.start_token_index] # will store indices of words in sentence
 
@@ -165,6 +123,8 @@ class Seq2seq(nn.Module):
                     # Add word to current sentence
                     word_index = word[0,0].data[0]
                     sent.append(word_index)
+
+                    # Onehotify word
 
                     # End translation if next word is '<s>'
                     if word_index is self.start_token_index or j is 29:

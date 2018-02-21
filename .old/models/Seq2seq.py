@@ -10,7 +10,7 @@ class Seq2seq(nn.Module):
     def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, start_token_index=0):
         super(Seq2seq, self).__init__()
         self.h_dim = h_dim
-        self.vocab_size_trg = embedding_trg.size(0)
+        self.vocab_size = embedding_trg.size(0)
         self.start_token_index = start_token_index
 
         # Create encoder and decoder
@@ -19,44 +19,14 @@ class Seq2seq(nn.Module):
 
         # Create linear layers to combine context and hidden state
         self.linear1 = nn.Linear(2 * self.h_dim, self.h_dim)
-        self.linear2 = nn.Linear(self.h_dim, self.vocab_size_trg)
-
-        # Weight tying
+        self.linear2 = nn.Linear(self.h_dim, self.vocab_size)
         if False and self.decoder.embedding.weight.size().equals(linear2.weight.size()): # weight tying
             self.linear2.weight = self.decoder.embedding.weight
-
-    def attention(self, out_d, out_e):
-        return out_d
 
     def forward(self, src, trg):
         
         # Pass through encoder
-        out_e, final_e = self.encoder(src)
-        
-        # Pass through decoder
-        out_d, final_d = self.decoder(trg, final_e)
-
-        # Apply attention
-        context = self.attention(out_d, out_e)
-        out_cat = torch.cat((out_d, context), dim=2) 
-
-        # Pass through linear layers to predict next word and return word probabilities
-        x = self.linear1(out_cat)
-        x = self.linear2(x)
-
-        # Debug: print first sentence src, trg, and pred
-        probs, m = self.max()
-
-
-
-
-
-
-        return x
-
-        
-    def predict(self, src):
-        return []
+        h_e_outs, h_e_final = self.encoder(src)
 
         # Store predictions: list of len bs of items of size sl x vs
         preds = []

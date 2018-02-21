@@ -20,14 +20,13 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Validate model
         val_freq = 20
-        if epoch % val_freq == 21:
+        if epoch % val_freq == 5:
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
-            logger.log('Validation complete. BLEU: {}'.format(bleu_val))
             if bleu_val > bleu_best:
                 bleu_best = bleu_val
                 #logger.save_model(model.state_dict())
                 logger.log('New best: {}'.format(bleu_best))
-
+    
         # Train model
         losses = AverageMeter()
         model.train()
@@ -56,13 +55,6 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
             optimizer.step()
 
-            # Log within epoch
-            if i % 1000 == 999:
-                logger.log('''Epoch [{e}/{num_e}]\t Batch [{b}/{num_b}]\t Loss: {l:.3f}'''.format(e=epoch+1, num_e=num_epochs, b=i, num_b=len(train_iter), l=losses.avg))
-
-        # Log after each epoch
-        logger.log('''Epoch [{e}/{num_e}] complete. Loss: {l:.3f}'''.format(e=epoch+1, num_e=num_epochs, l=losses.avg))
-        
-        # DEBUG
-        if epoch % 3 == 2:
-            torch.save(model.state_dict(), 'saves/model.pkl')
+        # Log information
+        if True: # i % 1000 == 10:
+            logger.log('''Epoch [{epochs}/{num_epochs}]\t Batch [{batch}/{num_batches}]\t Loss: {losses.avg:.3f}'''.format(epochs=epoch+1, num_epochs=num_epochs, batch=i, num_batches=len(train_iter), losses=losses))

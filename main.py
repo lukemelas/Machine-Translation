@@ -1,4 +1,4 @@
-import argparse, os, datetime, pickle
+import argparse, os, datetime
 
 import torch
 import torch.nn as nn
@@ -31,30 +31,8 @@ def main():
     use_gpu = torch.cuda.is_available()
 
     # Load and process data
-    #SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
-    #print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
-
-    if os.path.isfile('.data/src.pickle'):
-        with open('.data/src.pickle', 'rb') as handle:
-            SRC = pickle.load(handle)
-        with open('.data/trg.pickle', 'rb') as handle:
-            TRG = pickle.load(handle)
-        with open('.data/train_iter.pickle', 'rb') as handle:
-            train_iter = pickle.load(handle)
-        with open('.data/val_iter.pickle', 'rb') as handle:
-            val_iter = pickle.load(handle)
-        print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
-    else:
-        SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
-        with open('.data/src.pickle', 'wb') as handle:
-            pickle.dump(SRC, handle)
-        with open('.data/trg.pickle', 'wb') as handle:
-            pickle.dump(TRG, handle)
-        with open('.data/train_iter.pickle', 'wb') as handle:
-            pickle.dump(train_iter, handle)
-        with open('.data/val_iter.pickle', 'wb') as handle:
-            pickle.dump(val_iter, handle)
-        print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
+    SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
+    print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
 
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
     embedding_src = (torch.rand(len(SRC.vocab), args.emb) - 0.5) * 2
@@ -67,8 +45,13 @@ def main():
       print('Loaded pretrained model.')
     model = model.cuda() if use_gpu else model
 
+    # Create weight to mask padding tokens for loss function
+    weight = torch.ones(len(TRG.vocab))
+    weight[TRG.vocab.stoi['<pad>']] = 0
+    weight = weight.cuda() if use_gpu else weight
+
     # Create loss function and optimizer
-    criterion = nn.CrossEntropyLoss() 
+    criterion = nn.CrossEntropyLoss(weight=weight) 
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
   

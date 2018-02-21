@@ -11,20 +11,23 @@ class DecoderLSTM(nn.Module):
         self.h_dim = h_dim
         self.dropout_p = dropout_p
         
-        # Create word embedding, LSTM
+        # Create word embedding with optional weight tying
         self.embedding = nn.Embedding(self.vocab_size, self.embedding_size)
         self.embedding.weight.data.copy_(embedding) 
+        
+        # Create LSTM
         self.lstm = nn.LSTM(self.embedding_size, self.h_dim, self.num_layers, dropout=self.dropout_p)
     
     def forward(self, x, h0):
-
-        # Embed text and pass through GRU
+        
+        # Embed text
         x = self.embedding(x)
+
+        # Pass through LSTM
         out, h = self.lstm(x, h0)
         return out, h
 
     def init_hidden(self, batch_size):
         return Variable(torch.zeros(2 * self.num_layers, batch_size, self.h_dim), requires_grad=False)
-
-# TODO
-# - dropout
+# To do
+# - implement three-way weight tying (TWWT)

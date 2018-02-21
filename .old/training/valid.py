@@ -17,8 +17,12 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         src = batch.src.cuda() if use_gpu else batch.src
         trg = batch.trg.cuda() if use_gpu else batch.trg
 
-        # Get model prediction (from beam search)
-        sents = model.predict(src) # list of lists of word indices
+        # Forward. Model returns best sentence from beam search
+        nothing = Variable(torch.zeros(trg.size()), requires_grad=False).long() # no ground truth
+        nothing = nothing.cuda() if use_gpu else nothing
+        sents = model(src, nothing) # use beam search, output a list of lists of word indices
+        
+        print(sents[2])
         
         # Prepare sentences for moses multi-bleu script
         out_sentences = []
