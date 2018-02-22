@@ -19,8 +19,8 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         scheduler.step()
 
         # Validate model
-        val_freq = 20
-        if epoch % val_freq == 21:
+        val_freq = 3
+        if epoch % val_freq == 0:
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
             logger.log('Validation complete. BLEU: {}'.format(bleu_val))
             if bleu_val > bleu_best:
@@ -45,9 +45,28 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             #print('scores: ', scores)
             #print('trg: ', trg)
 
+            # Debug -- print sentences
+            debug_print_sentences = False
+            if i is 0 and debug_print_sentences:
+                predictions = model.predict(src)
+                for j in range(3): #src.size(1)): # batch size
+                    print('Source: ', ' '.join(SRC.vocab.itos[x] for x in batch.src.data.select(1,j)))
+                    print('Target: ', ' '.join(TRG.vocab.itos[x] for x in batch.trg.data.select(1,j)))
+                    probs, maxwords = torch.max(scores.data.select(1,j), dim=1)
+                    print('Training Prediction: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
+                    print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions[j]))
+
+                return 
+
+            # Cut off <s> from trg and </s> from scores
+            scores = scores[:-1]
+            trg = trg[1:]           
+
+            # Reshape for loss function
             scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
             trg = trg.view(scores.size(0))
 
+            # Pass through loss function
             loss = criterion(scores, trg) 
             loss.backward()
             losses.update(loss.data[0])

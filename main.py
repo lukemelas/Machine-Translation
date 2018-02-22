@@ -37,7 +37,7 @@ def main():
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
     embedding_src = (torch.rand(len(SRC.vocab), args.emb) - 0.5) * 2
     embedding_trg = (torch.rand(len(TRG.vocab), args.emb) - 0.5) * 2
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, start_token_index=TRG.vocab.stoi['<s>']) 
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>']) 
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):
