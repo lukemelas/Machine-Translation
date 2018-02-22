@@ -17,7 +17,7 @@ class EncoderLSTM(nn.Module):
         self.lstm = nn.LSTM(self.embedding_size, self.h_dim, self.num_layers, dropout=self.dropout_p)
 
     def forward(self, x):
-
+        
         # Embed text 
         x = self.embedding(x)
 

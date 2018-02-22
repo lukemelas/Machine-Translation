@@ -59,15 +59,6 @@ class Seq2seq(nn.Module):
             
             # Initial hidden state is last state of encoder
             state_d = tuple(x.select(1,i).unsqueeze(1).contiguous() for x in final_e)
-            
-            #h_e_final0 = h_e_final[0][:,i,:].unsqueeze(1).contiguous()
-            #h_e_final1 = h_e_final[1][:,i,:].unsqueeze(1).contiguous()
-            #h_d_state = (h_e_final0, h_e_final1) # make bs = 1
-                
-            #print('h_e_final[0].size(): ', h_e_final[0].size())
-            #print('h_e_final[1].size(): ', h_e_final[1].size())
-            #print('h_d_state[0].size(): ', h_d_state[0].size())
-            #print('h_d_state[1].size(): ', h_d_state[1].size())
                 
             # Create initial starting word '<s>'
             word = Variable(torch.LongTensor([self.start_token_index]).view(1,1), requires_grad=False)
@@ -84,9 +75,6 @@ class Seq2seq(nn.Module):
                 # Debug: replace with ground truth
                 if trg is not None: word = trg[j,i].view(1,1)
 
-                # Add word to current sentence
-                sent.append(word_index)
-
                 # Pass through decoder one word at a time
                 out_d, state_d = self.decoder(word, state_d)
 
@@ -102,6 +90,9 @@ class Seq2seq(nn.Module):
                 probs, word = x.topk(1)
                 word = word.view(1,1)
                 word_index = word[0,0].data[0]
+
+                # Add word to current sentence
+                sent.append(word_index)
                 
                 # Update word counter
                 j += 1
@@ -111,4 +102,10 @@ class Seq2seq(nn.Module):
 
         # Return list of sentences (list of list of words)
         return sents
+
+# TODO
+# - implement beam search
+# - implement attention
+# - implement other type of attention
+# - implement dropout
 

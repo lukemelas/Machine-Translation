@@ -22,11 +22,11 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         val_freq = 3
         if epoch % val_freq == 0:
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
-            logger.log('Validation complete. BLEU: {}'.format(bleu_val))
+            logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
             if bleu_val > bleu_best:
                 bleu_best = bleu_val
                 #logger.save_model(model.state_dict())
-                logger.log('New best: {}'.format(bleu_best))
+                logger.log('New best: {:.3f}'.format(bleu_best))
 
         # Train model
         losses = AverageMeter()
@@ -35,30 +35,23 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             src = batch.src.cuda() if use_gpu else batch.src
             trg = batch.trg.cuda() if use_gpu else batch.trg
             
-            #print('scr: ', src)
-            #print('trg: ', trg)
-
             # Forward, backprop, optimizer
             model.zero_grad()
             scores = model(src, trg)
-
-            #print('scores: ', scores)
-            #print('trg: ', trg)
 
             # Debug -- print sentences
             debug_print_sentences = False
             if i is 0 and debug_print_sentences:
                 predictions = model.predict(src)
-                for j in range(3): #src.size(1)): # batch size
+                for j in range(2,4): #src.size(1)): # batch size
                     print('Source: ', ' '.join(SRC.vocab.itos[x] for x in batch.src.data.select(1,j)))
                     print('Target: ', ' '.join(TRG.vocab.itos[x] for x in batch.trg.data.select(1,j)))
                     probs, maxwords = torch.max(scores.data.select(1,j), dim=1)
                     print('Training Prediction: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
                     print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions[j]))
+                    print()
 
-                return 
-
-            # Cut off <s> from trg and </s> from scores
+            # Remove <s> from trg and </s> from scores
             scores = scores[:-1]
             trg = trg[1:]           
 
