@@ -15,13 +15,11 @@ class EncoderLSTM(nn.Module):
         self.embedding = nn.Embedding(self.vocab_size, self.embedding_size)
         self.embedding.weight.data.copy_(embedding)
         self.lstm = nn.LSTM(self.embedding_size, self.h_dim, self.num_layers, dropout=self.dropout_p)
-        self.dropout = nn.Dropout(dropout_p)
 
     def forward(self, x):
         
         # Embed text 
         x = self.embedding(x)
-        x = self.dropout(x)
 
         # Create initial hidden state of zeros: 2-tuple of num_layers x batch size x hidden dim
         init = Variable(torch.zeros(self.num_layers, x.size(1), self.h_dim), requires_grad=False)
@@ -33,4 +31,5 @@ class EncoderLSTM(nn.Module):
         return out, h
 
 # Things to add:
+# - dropout
 # - bidirectional

@@ -15,14 +15,16 @@ class DecoderLSTM(nn.Module):
         self.embedding = nn.Embedding(self.vocab_size, self.embedding_size)
         self.embedding.weight.data.copy_(embedding) 
         self.lstm = nn.LSTM(self.embedding_size, self.h_dim, self.num_layers, dropout=self.dropout_p)
-        self.dropout = nn.Dropout(self.dropout_p)
     
     def forward(self, x, h0):
 
         # Embed text and pass through GRU
         x = self.embedding(x)
-        x = self.dropout(x)
         out, h = self.lstm(x, h0)
         return out, h
 
+    def init_hidden(self, batch_size):
+        return Variable(torch.zeros(2 * self.num_layers, batch_size, self.h_dim), requires_grad=False)
 
+# TODO
+# - dropout
