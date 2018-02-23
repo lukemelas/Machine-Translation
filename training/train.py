@@ -20,7 +20,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Validate model
         val_freq = 3
-        if epoch % val_freq == 0:
+        if epoch % val_freq == 0 and False: # skip for debug
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
             #logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
             if bleu_val > bleu_best:
@@ -40,16 +40,21 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = model(src, trg)
 
             # Debug -- print sentences
-            debug_print_sentences = False
+            debug_print_sentences = True
             if i is 0 and debug_print_sentences:
+                model.eval()
                 predictions = model.predict(src)
-                for j in range(2,4): #src.size(1)): # batch size
+                predictions_beam = model.predict_beam(src, TRG=TRG) # TRG for debug
+                model.train()
+                for j in range(4,7): #src.size(1)): # batch size
                     print('Source: ', ' '.join(SRC.vocab.itos[x] for x in batch.src.data.select(1,j)))
                     print('Target: ', ' '.join(TRG.vocab.itos[x] for x in batch.trg.data.select(1,j)))
                     probs, maxwords = torch.max(scores.data.select(1,j), dim=1)
                     print('Training Prediction: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
                     print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions[j]))
+                    print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions_beam[j])) 
                     print()
+                return
 
             # Remove <s> from trg and </s> from scores
             scores = scores[:-1]

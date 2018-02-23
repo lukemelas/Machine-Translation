@@ -38,6 +38,7 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
 
         #print('out_sentences: ', out_sentences)
         #print('ref_sentences: ', ref_sentences)
+        #return
 
         #out_sentences = ['The dog is my favorite animal.', 'The brown snake is not yellow'] # DEBUG
         #ref_sentences = ['The cat is my favorite animal.', 'The yellow snake is not brown'] # DEBUG

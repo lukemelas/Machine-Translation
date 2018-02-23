@@ -81,8 +81,6 @@ class Seq2seq(nn.Module):
 
     def predict(self, src, trg=None):
 
-        return self.predict_beam(src)
-
         # Store predictions: list of len bs of items of size sl x vs
         sents = []
 
@@ -139,7 +137,7 @@ class Seq2seq(nn.Module):
         # Return list of sentences (list of list of words)
         return sents
 
-    def predict_beam(self, src, beam_size=5):
+    def predict_beam(self, src, beam_size=1, TRG='FOR DEBUG'):
 
         # Store final sentences: list of len bs of lists (of variable len) of words
         sents = []
@@ -158,7 +156,7 @@ class Seq2seq(nn.Module):
             word_index = self.start_token_index # '<s>'
 
             # Store tuples of (sent, state, score) in beam
-            beam = [([word_index], state_d, 1)]
+            beam = [([word_index], state_d, 0)]
             
             # Store candidate sentences: length beam_size * vocab_size (really beam_size)
             candidates = [] 
@@ -193,30 +191,37 @@ class Seq2seq(nn.Module):
                     # Pass through linear layer
                     x = self.linear1(out_cat)
                     x = self.linear2(x)
+                    x = x[0,0] # reshape (1 x 1 x vs --> vs) and do (manual) softmax
+                    x = x.exp() / x.exp().sum()
                     
-                    # Sample word from distribution (by taking maximum)
+                    # Get top (beam_size) words from distribution
                     probs, words = x.topk(beam_size)
                     for k in range(beam_size):
                         word_index = words[k].data[0]
-                        word_score = probs[k].data[0]
+                        word_score = probs[k].log().data[0] # score = log likelihood
                         
                         # Get sentence probabilities
-                        candidate_score = self.sentence_prob(score, word_score, len(sent))
-                        print('words ', words, 'word_index ', word_index, 'state ', state, 'candidate_score ', score)
-                        candidates.append( (sent + word_index, state, candidate_score) )
+                        candidate_score = self.sentence_prob(score, word_score, len(sent)) # remove <s>
+                        #print('words ', words, 'word_index ', word_index,'probs ', probs, 'candidate_score ', score)
+                        candidates.append( (sent + [word_index], state, candidate_score) )
 
+                #print([' '.join(TRG.vocab.itos[x] for x in c[0]) for c in candidates])
                 # Get put top (beam_size) candidates into beam
                 beam = sorted(candidates, key=lambda x: x[2])[-(beam_size):] 
                 candidates = [] # reset candidates for next beam
 
+                print([(' '.join(TRG.vocab.itos[x] for x in c[0]), '{:.3f}'.format(c[2])) for c in beam]) 
+
             # Put top (1) sentence into final list of sentences
-            sents.append(sent)
+            final_sent = max(beam, key=lambda x: x[2])[0] # extract top sentence
+            sents.append(final_sent[1:]) # remove <s> token
 
         # Return final list of all sentences
         return sents                
 
-    def sentence_prob(self, score, word_score, sent_length):
-        return score * word_score
+    def sentence_prob(self, score, word_score, sent_length, hyperparam_alpha=0.6):
+        return score + word_score
+        # return (score * ((sent_length - 1) ** hyperparam_alpha) + word_score) / (sent_length ** hyperparam_alpha)
 
 # TODO
 # - implement beam search
