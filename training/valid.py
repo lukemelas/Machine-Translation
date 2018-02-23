@@ -45,7 +45,7 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         batch_bleu = moses_multi_bleu(out_sentences, ref_sentences)
         bleu.update(batch_bleu)
   
-    # # Log information after validation
-    # logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
+    # Log information after validation
+    logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
 
     return bleu.avg

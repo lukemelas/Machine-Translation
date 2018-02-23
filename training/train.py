@@ -22,7 +22,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         val_freq = 3
         if epoch % val_freq == 0:
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
-            logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
+            #logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
             if bleu_val > bleu_best:
                 bleu_best = bleu_val
                 #logger.save_model(model.state_dict())

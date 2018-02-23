@@ -62,9 +62,6 @@ class Seq2seq(nn.Module):
         if False and self.decoder.embedding.weight.size().equals(linear2.weight.size()): # weight tying
             self.linear2.weight = self.decoder.embedding.weight
 
-    #def attention(self, out_d, out_e):
-    #    return out_d
-
     def forward(self, src, trg):
         
         # Pass through encoder
@@ -83,6 +80,8 @@ class Seq2seq(nn.Module):
         return x
 
     def predict(self, src, trg=None):
+
+        return self.predict_beam(src)
 
         # Store predictions: list of len bs of items of size sl x vs
         sents = []
@@ -139,6 +138,85 @@ class Seq2seq(nn.Module):
 
         # Return list of sentences (list of list of words)
         return sents
+
+    def predict_beam(self, src, beam_size=5):
+
+        # Store final sentences: list of len bs of lists (of variable len) of words
+        sents = []
+
+        # Pass src through encoder
+        out_e, final_e = self.encoder(src)
+
+        # Loop through batches: for the inner code, bs = 1
+        for i in range(out_e.size(1)):
+            
+            # Initial hidden state is last state of encoder
+            state_d = tuple(x.select(1,i).unsqueeze(1).contiguous() for x in final_e)
+            out_e_i = out_e.select(1,i).unsqueeze(1) # for attention
+                
+            # Create initial starting word '<s>'
+            word_index = self.start_token_index # '<s>'
+
+            # Store tuples of (sent, state, score) in beam
+            beam = [([word_index], state_d, 1)]
+            
+            # Store candidate sentences: length beam_size * vocab_size (really beam_size)
+            candidates = [] 
+
+            # Loop until max sentence length reached
+            for j in range(20): # max len = 15
+
+                # Stop if all sentences in beam end in '</s>'
+                stop = True
+                for sent, state, score in beam: # stop if all sentences 
+                    stop = stop and (sent[-1] is self.eos_token_index)
+                if stop is True: break
+                
+                # Loop through sentences in beam
+                for sent, state, score in beam:
+                    word = sent[-1]
+
+                    # If sentence already finished, keep it as a candidate
+                    if word is self.eos_token_index:
+                        candidates.append( (sent, state, score) )
+                        continue
+
+                    # Otherwise run through decoder
+                    word = Variable(torch.LongTensor([word_index]).view(1,1), requires_grad=False)
+                    if use_gpu: word = word.cuda()
+                    out_d, state = self.decoder(word, state)
+
+                    # Apply attention 
+                    context = self.attention(out_e_i, out_d)
+                    out_cat = torch.cat((out_d, context), dim=2) 
+
+                    # Pass through linear layer
+                    x = self.linear1(out_cat)
+                    x = self.linear2(x)
+                    
+                    # Sample word from distribution (by taking maximum)
+                    probs, words = x.topk(beam_size)
+                    for k in range(beam_size):
+                        word_index = words[k].data[0]
+                        word_score = probs[k].data[0]
+                        
+                        # Get sentence probabilities
+                        candidate_score = self.sentence_prob(score, word_score, len(sent))
+                        print('words ', words, 'word_index ', word_index, 'state ', state, 'candidate_score ', score)
+                        candidates.append( (sent + word_index, state, candidate_score) )
+
+                # Get put top (beam_size) candidates into beam
+                beam = sorted(candidates, key=lambda x: x[2])[-(beam_size):] 
+                candidates = [] # reset candidates for next beam
+
+            # Put top (1) sentence into final list of sentences
+            sents.append(sent)
+
+        # Return final list of all sentences
+        return sents                
+
+    def sentence_prob(self, score, word_score, sent_length):
+        return score * word_score
 
 # TODO
 # - implement beam search
