@@ -137,7 +137,7 @@ class Seq2seq(nn.Module):
         # Return list of sentences (list of list of words)
         return sents
 
-    def predict_beam(self, src, beam_size=1, TRG='FOR DEBUG'):
+    def predict_beam(self, src, beam_size=2, TRG='FOR DEBUG'):
 
         # Store final sentences: list of len bs of lists (of variable len) of words
         sents = []
@@ -162,7 +162,7 @@ class Seq2seq(nn.Module):
             candidates = [] 
 
             # Loop until max sentence length reached
-            for j in range(20): # max len = 15
+            for j in range(50): # max len = 15
 
                 # Stop if all sentences in beam end in '</s>'
                 stop = True

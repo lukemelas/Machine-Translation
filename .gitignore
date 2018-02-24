@@ -3,6 +3,8 @@
 saves/
 .data/
 .data-big/
+.test.py
+.tests/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
