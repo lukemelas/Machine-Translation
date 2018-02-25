@@ -15,18 +15,17 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
     bleu_best = -1
     for epoch in range(num_epochs):
     
-        # Step learning rate scheduler
-        scheduler.step()
-
         # Validate model
-        val_freq = 3
-        if epoch % val_freq == 0: # and False: # skip for debug
-            bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
-            #logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
-            if bleu_val > bleu_best:
-                bleu_best = bleu_val
-                #logger.save_model(model.state_dict())
-                logger.log('New best: {:.3f}'.format(bleu_best))
+        # val_freq = 1
+        # if epoch % val_freq == 0: # and False: # skip for debug
+        bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
+        if bleu_val > bleu_best:
+            bleu_best = bleu_val
+            logger.save_model(model.state_dict())
+            logger.log('New best: {:.3f}'.format(bleu_best))
+
+        # Step learning rate scheduler
+        scheduler.step(bleu_val) # input bleu score
 
         # Train model
         losses = AverageMeter()

@@ -18,7 +18,7 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         trg = batch.trg.cuda() if use_gpu else batch.trg
 
         # Get model prediction (from beam search)
-        sents = model.predict(src) # list of lists of word indices
+        sents = model.predict_beam(src) # list of lists of word indices
         
         # Prepare sentences for moses multi-bleu script
         out_sentences = []

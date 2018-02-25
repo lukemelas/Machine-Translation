@@ -6,6 +6,7 @@ saves/
 .test.py
 .tests/
 *.vec
+nohup.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
