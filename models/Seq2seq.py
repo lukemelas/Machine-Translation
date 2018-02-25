@@ -7,8 +7,9 @@ from .Encoder import EncoderLSTM
 from .Decoder import DecoderLSTM
 
 class Attention(nn.Module):
-    def __init__(self, attn_type='dot-product', h_dim=300):
+    def __init__(self, bidirectional=True, attn_type='dot-product', h_dim=300):
         super(Attention, self).__init__()
+        self.bidirectional = bidirectional
         self.attn_type = attn_type
         self.h_dim = h_dim
 
@@ -22,7 +23,9 @@ class Attention(nn.Module):
 
     def forward(self, out_e, out_d):
 
-        # Move batch first
+        # Deal with bidirectional encoder, move batches first
+        if self.bidirectional: # sum hidden states for both directions
+            out_e = out_e.contiguous().view(out_e.size(0), out_e.size(1), 2, -1).sum(2).view(out_e.size(0), out_e.size(1), -1)
         out_e = out_e.transpose(0,1) # b x sl x hd
         out_d = out_d.transpose(0,1) # b x tl x hd
 
@@ -42,7 +45,7 @@ class Attention(nn.Module):
 
 
 class Seq2seq(nn.Module):
-    def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, start_token_index=0, eos_token_index=1):
+    def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, bi, start_token_index=0, eos_token_index=1):
         super(Seq2seq, self).__init__()
         self.h_dim = h_dim
         self.vocab_size_trg = embedding_trg.size(0)
@@ -50,16 +53,17 @@ class Seq2seq(nn.Module):
         self.eos_token_index = eos_token_index
 
         # Create encoder, decoder, attention
-        self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p)
-        self.decoder = DecoderLSTM(embedding_trg, h_dim, num_layers, dropout_p=dropout_p)
-        self.attention = Attention()
+        self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p, bidirectional=bi)
+        self.decoder = DecoderLSTM(embedding_trg, h_dim, num_layers * 2 if bi else num_layers, dropout_p=dropout_p)
+        self.attention = Attention(bidirectional=bi)
 
         # Create linear layers to combine context and hidden state
         self.linear1 = nn.Linear(2 * self.h_dim, self.h_dim)
         self.linear2 = nn.Linear(self.h_dim, self.vocab_size_trg)
 
         # Weight tying
-        if False and self.decoder.embedding.weight.size().equals(linear2.weight.size()): # weight tying
+        if True and self.decoder.embedding.weight.size() == self.linear2.weight.size(): # weight tying
+            print('Weight tying!')
             self.linear2.weight = self.decoder.embedding.weight
 
     def forward(self, src, trg):
@@ -137,7 +141,7 @@ class Seq2seq(nn.Module):
         # Return list of sentences (list of list of words)
         return sents
 
-    def predict_beam(self, src, beam_size=2, TRG='FOR DEBUG'):
+    def predict_beam(self, src, beam_size=1, TRG='FOR DEBUG'):
 
         # Store final sentences: list of len bs of lists (of variable len) of words
         sents = []
@@ -205,12 +209,12 @@ class Seq2seq(nn.Module):
                         #print('words ', words, 'word_index ', word_index,'probs ', probs, 'candidate_score ', score)
                         candidates.append( (sent + [word_index], state, candidate_score) )
 
-                #print([' '.join(TRG.vocab.itos[x] for x in c[0]) for c in candidates])
                 # Get put top (beam_size) candidates into beam
                 beam = sorted(candidates, key=lambda x: x[2])[-(beam_size):] 
                 candidates = [] # reset candidates for next beam
 
-                print([(' '.join(TRG.vocab.itos[x] for x in c[0]), '{:.3f}'.format(c[2])) for c in beam]) 
+                # PRINT PRINT SO SAR
+                #print([(' '.join(TRG.vocab.itos[x] for x in c[0]), '{:.3f}'.format(c[2])) for c in beam]) 
 
             # Put top (1) sentence into final list of sentences
             final_sent = max(beam, key=lambda x: x[2])[0] # extract top sentence

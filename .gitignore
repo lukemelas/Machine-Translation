@@ -5,6 +5,7 @@ saves/
 .data-big/
 .test.py
 .tests/
+*.vec
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

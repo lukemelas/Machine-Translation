@@ -20,7 +20,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Validate model
         val_freq = 3
-        if epoch % val_freq == 0 and False: # skip for debug
+        if epoch % val_freq == 0: # and False: # skip for debug
             bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
             #logger.log('Validation complete. BLEU: {:.3f}'.format(bleu_val))
             if bleu_val > bleu_best:
@@ -40,7 +40,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = model(src, trg)
 
             # Debug -- print sentences
-            debug_print_sentences = True
+            debug_print_sentences = False
             if i is 0 and debug_print_sentences:
                 model.eval()
                 predictions = model.predict(src)

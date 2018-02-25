@@ -1,8 +1,10 @@
+import itertools, os
+import numpy as np
+import spacy
+
 import torch
 from torchtext import data, datasets
 from torchtext.vocab import Vectors, GloVe
-import spacy
-import itertools, os
 use_gpu = torch.cuda.is_available()
 
 def preprocess(vocab_size, batchsize, max_sent_len=20):
@@ -42,3 +44,13 @@ def preprocess(vocab_size, batchsize, max_sent_len=20):
     train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=batchsize, device=-1, repeat=False, sort_key=lambda x: len(x.src))
     
     return DE, EN, train_iter, val_iter
+
+def load_embeddings(SRC, TRG, np_src_file, np_trg_file):
+    '''Load English and German embeddings from saved numpy files'''
+    if os.path.isfile(np_src_file) and os.path.isfile(np_trg_file):
+        emb_tr_src = torch.from_numpy(np.load(np_src_file))
+        emb_tr_trg = torch.from_numpy(np.load(np_trg_file))
+    else: 
+        raise Exception('Vectors not available to load from numpy file')
+    return emb_tr_src, emb_tr_trg
+    

@@ -7,15 +7,16 @@ import torchtext
 
 from training import train, valid, predict
 from utils.utils import Logger, AverageMeter
-from utils.preprocess import preprocess
+from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
 
 parser = argparse.ArgumentParser(description='Language Model')
 parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learning rate, default 2e-3')
-parser.add_argument('--hs', default=128, type=int, metavar='N', help='size of hidden state, default 128')
-parser.add_argument('--emb', default=128, type=int, metavar='N', help='embedding size, default 128')
+parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state, default 300')
+parser.add_argument('--emb', default=300, type=int, metavar='N', help='embedding size, default 300')
 parser.add_argument('--nlayers', default=2, type=int, metavar='N', help='number of layers in rnn, default 2')
 parser.add_argument('--dp', default=0.0, type=float, metavar='N', help='dropout probability, default 0.0')
+parser.add_argument('--unidir', dest='bi', action='store_false', help='Unidirectional encoder. Default is bidirectional')
 parser.add_argument('-v', default=0, type=int, metavar='N', help='vocab size, use 0 for maximum size, default 0')
 parser.add_argument('-b', default=64, type=int, metavar='N', help='batch size, default 64')
 parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number of epochs, default 15')
@@ -23,7 +24,7 @@ parser.add_argument('--model', metavar='DIR', default=None, help='path to model,
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model, default False')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions, default None')
 parser.add_argument('--predict_outfile', metavar='DIR', default='data/preds.txt', help='file to output final predictions, default "data/preds.txt"')
-parser.set_defaults(evaluate = False)
+parser.set_defaults(evaluate=False, bi=True)
 
 def main():
     global args
@@ -33,11 +34,21 @@ def main():
     # Load and process data
     SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
     print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
+    
+    # Load embeddings if available
+    LOAD_EMBEDDINGS = True
+    if LOAD_EMBEDDINGS:
+        np_de_file = 'scripts/emb-{}-de.npy'.format(len(SRC.vocab))
+        np_en_file = 'scripts/emb-{}-en.npy'.format(len(TRG.vocab))
+        embedding_src, embedding_trg = load_embeddings(SRC, TRG, np_de_file, np_en_file)
+        print('Loaded embedding vectors from np files')
+    else:
+        embedding_src = (torch.rand(len(SRC.vocab), args.emb) - 0.5) * 2
+        embedding_trg = (torch.rand(len(TRG.vocab), args.emb) - 0.5) * 2
+        print('Initialized embedding vectors')
 
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
-    embedding_src = (torch.rand(len(SRC.vocab), args.emb) - 0.5) * 2
-    embedding_trg = (torch.rand(len(TRG.vocab), args.emb) - 0.5) * 2
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>']) 
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>']) 
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):

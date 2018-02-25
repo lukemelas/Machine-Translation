@@ -17,3 +17,6 @@ chmod 755 scripts/multi-bleu.perl
 # head -10000 .data/iwslt/de-en/train.de-en-full.en > .data/iwslt/de-en/train.de-en.en
 #  wc -l .data/iwslt/de-en/train.de-en.de
 #  wc -l .data/iwslt/de-en/train.de-en.en
+
+# # Download fasttext German embeddings
+# wget https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.de.vec
