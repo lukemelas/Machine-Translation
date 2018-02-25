@@ -48,7 +48,7 @@ def main():
         print('Initialized embedding vectors')
 
     # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>']) 
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>'], pad_token_index=TRG.vocab.stoi['<pad>']) 
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):

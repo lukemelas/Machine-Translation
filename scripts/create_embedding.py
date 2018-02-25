@@ -24,8 +24,8 @@ def load_embeddings(path, TEXT, embedding_dim=300):
                     vector = np.array([0] * 300, dtype='float32')
                     print('error: ', word)
                 embeddings[index] = vector
-            if i % 1000 == 0:
-                print('{i} complete')
+            if i % 10000 == 0:
+                print('{i} complete'.format(i=i)
         return embeddings 
 
 # Save German embeddings
