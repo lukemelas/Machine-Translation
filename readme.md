@@ -33,4 +33,4 @@ For example, we found the following hyperparameters worked well:
 ``` python main.py -b 128 --bptt 64 --epochs 20 --nlayers 2 ```
 -->
 
-
+<!-- cp .data/iwslt/de-en/train.de-en-full.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-full.de .data/iwslt/de-en/train.de-en.de -->

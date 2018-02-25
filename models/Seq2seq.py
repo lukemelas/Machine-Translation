@@ -30,12 +30,13 @@ class Attention(nn.Module):
         out_d = out_d.transpose(0,1) # b x tl x hd
 
         # Different types of attention
-        attn = out_e.bmm(out_d.transpose(1,2)) # (b x sl x hd) (b x hd x tl) --> (b x sl x tl)
-        #if self.attn_type is 'dot-product':
-        #    attn = out_e.bmm(out_d.transpose(1,2)) # (b x sl x hd) (b x hd x tl) --> (b x sl x tl)
-        #elif self.attn_type is 'bahdanau':
-        #    #attn = self.linear(torch.cat((out_e, out_d), dim=2)) # --> b x  
-        #    raise NotImplementedError()
+        #attn = out_e.bmm(out_d.transpose(1,2)) # (b x sl x hd) (b x hd x tl) --> (b x sl x tl)
+        if self.attn_type is 'dot-product':
+            attn = out_e.bmm(out_d.transpose(1,2)) # (b x sl x hd) (b x hd x tl) --> (b x sl x tl)
+        elif self.attn_type is 'bahdanau':
+            out_d = 
+            attn = self.linear(torch.cat((out_e, out_d), dim=2)) # --> b x  
+            #raise NotImplementedError()
 
         # Apply attn to encoder outputs
         attn = attn.exp() / attn.exp().sum(dim=1).unsqueeze(1) # turn this into softmax with updated pytorch
