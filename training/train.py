@@ -1,4 +1,4 @@
-import itertools, os, sys
+import itertools, os, sys, time
 sys.path.append('../')
 
 import torch
@@ -16,13 +16,14 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
     for epoch in range(num_epochs):
     
         # Validate model
-        # val_freq = 1
-        # if epoch % val_freq == 0: # and False: # skip for debug
+        start_time = time.time() # timer 
         bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
         if bleu_val > bleu_best:
             bleu_best = bleu_val
             logger.save_model(model.state_dict())
             logger.log('New best: {:.3f}'.format(bleu_best))
+        val_time = time.time()
+        print('Validation time: {:.3f}'.format(val_time - start_time))
 
         # Step learning rate scheduler
         scheduler.step(bleu_val) # input bleu score
@@ -39,7 +40,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = model(src, trg)
 
             # Debug -- print sentences
-            debug_print_sentences = True
+            debug_print_sentences = False
             if i is 0 and debug_print_sentences:
                 for k in range(src.size(1)):
                     src_bs1 = src.select(1,k).unsqueeze(1) # bs1 means batch size 1
@@ -80,7 +81,10 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Log after each epoch
         logger.log('''Epoch [{e}/{num_e}] complete. Loss: {l:.3f}'''.format(e=epoch+1, num_e=num_epochs, l=losses.avg))
+        print('Training time: {:.3f}'.format(time.time() - val_time))
         
-        # DEBUG
-        if epoch % 3 == 2:
-            torch.save(model.state_dict(), 'saves/model.pkl')
+        # # DEBUG
+        # if epoch % 3 == 2:
+        #     torch.save(model.state_dict(), 'saves/model.pkl')
+    
+    
