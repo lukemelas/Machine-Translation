@@ -13,40 +13,24 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
   
     # Iterate over words in validation batch. 
     bleu = AverageMeter()
+    sents_out = [] # list of sentences from decoder
+    sents_ref = [] # list of target sentences 
     for i, batch in enumerate(val_iter):
         src = batch.src.cuda() if use_gpu else batch.src
         trg = batch.trg.cuda() if use_gpu else batch.trg
-
         # Get model prediction (from beam search)
-        sents = model.predict_beam(src) # list of lists of word indices
-        
-        # Prepare sentences for moses multi-bleu script
-        out_sentences = []
-        ref_sentences = []
-        for i in range(trg.size(1)): # loop over batches
-            out = sents[i]
-            ref = trg[:,i].data 
-            remove_tokens = [TRG.vocab.stoi['<pad>'], TRG.vocab.stoi['<s>'], TRG.vocab.stoi['</s>']] 
-            out = [w for w in out if w not in remove_tokens]
-            ref = [w for w in ref if w not in remove_tokens]
-            out_sent = ' '.join(TRG.vocab.itos[j] for j in out)
-            ref_sent = ' '.join(TRG.vocab.itos[j] for j in ref)
-            out_sentences.append(out_sent)
-            ref_sentences.append(ref_sent)
-        
-        # Run moses multi-bleu script
-
-        #print('out_sentences: ', out_sentences)
-        #print('ref_sentences: ', ref_sentences)
-        #return
-
-        #out_sentences = ['The dog is my favorite animal.', 'The brown snake is not yellow'] # DEBUG
-        #ref_sentences = ['The cat is my favorite animal.', 'The yellow snake is not brown'] # DEBUG
-
-        batch_bleu = moses_multi_bleu(out_sentences, ref_sentences)
-        bleu.update(batch_bleu)
-  
+        out = model.predict_beam(src) # list of ints (word indices)
+        ref = list(trg.data.squeeze())
+        # Prepare sentence for bleu script
+        remove_tokens = [TRG.vocab.stoi['<pad>'], TRG.vocab.stoi['<s>'], TRG.vocab.stoi['</s>']] 
+        out = [w for w in out if w not in remove_tokens]
+        ref = [w for w in ref if w not in remove_tokens]
+        sent_out = ' '.join(TRG.vocab.itos[j] for j in out)
+        sent_ref = ' '.join(TRG.vocab.itos[j] for j in ref)
+        sents_out.append(sent_out)
+        sents_ref.append(sent_ref)
+    # Run moses bleu script 
+    bleu = moses_multi_bleu(sents_out, sents_ref) 
     # Log information after validation
-    logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu.avg))
-
-    return bleu.avg
+    logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu))
+    return bleu

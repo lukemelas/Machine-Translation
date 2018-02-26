@@ -39,19 +39,22 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = model(src, trg)
 
             # Debug -- print sentences
-            debug_print_sentences = False
+            debug_print_sentences = True
             if i is 0 and debug_print_sentences:
-                model.eval()
-                predictions = model.predict(src)
-                predictions_beam = model.predict_beam(src, TRG=TRG) # TRG for debug
-                model.train()
-                for j in range(4,7): #src.size(1)): # batch size
-                    print('Source: ', ' '.join(SRC.vocab.itos[x] for x in batch.src.data.select(1,j)))
-                    print('Target: ', ' '.join(TRG.vocab.itos[x] for x in batch.trg.data.select(1,j)))
-                    probs, maxwords = torch.max(scores.data.select(1,j), dim=1)
-                    print('Training Prediction: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
-                    print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions[j]))
-                    print('Validation Prediction: ', ' '.join(TRG.vocab.itos[x] for x in predictions_beam[j])) 
+                for k in range(src.size(1)):
+                    print(src.size(), trg.size())
+                    src_bs1 = src.select(1,k).unsqueeze(1) # bs1 means batch size 1
+                    trg_bs1 = trg.select(1,k).unsqueeze(1) 
+                    model.eval() # predict mode
+                    predictions = model.predict_beam(src_bs1, beam_size=1)
+                    predictions_beam = model.predict_beam(src_bs1, beam_size=5, TRG=TRG) # TRG for debug
+                    model.train() # test mode
+                    print('Source: ', ' '.join(SRC.vocab.itos[x] for x in src_bs1.squeeze().data))
+                    print('Target: ', ' '.join(TRG.vocab.itos[x] for x in trg_bs1.squeeze().data))
+                    probs, maxwords = torch.max(scores.data.select(1,k), dim=1) # training predictions
+                    print('Training Pred: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
+                    print('Validation Greedy Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions))
+                    print('Validation Beam Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions_beam)) 
                     print()
                 return
 

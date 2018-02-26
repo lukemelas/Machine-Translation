@@ -34,6 +34,7 @@ def main():
 
     # Load and process data
     SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
+    print(next(iter(train_iter)).src.size(), next(iter(val_iter)).src.size())
     print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
     
     # Load embeddings if available

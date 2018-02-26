@@ -41,8 +41,7 @@ def preprocess(vocab_size, batchsize, max_sent_len=20):
         EN.build_vocab(train.trg, min_freq=5)
 
     # Create iterators to process text in batches of approx. the same length
-    train_iter = data.BucketIterator(train, batch_size=batchsize, device=-1, repeat=False, sort_key=lambda x: len(x.src))
-    val_iter = data.BucketIterator(val, batch_size=1, device=-1, repeat=False, sort_key=lambda x: len(x.src))
+    train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=batchsize, device=-1, repeat=False, sort_key=lambda x: len(x.src))
     
     return DE, EN, train_iter, val_iter
 
