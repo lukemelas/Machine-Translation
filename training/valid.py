@@ -19,7 +19,7 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
         src = batch.src.cuda() if use_gpu else batch.src
         trg = batch.trg.cuda() if use_gpu else batch.trg
         # Get model prediction (from beam search)
-        out = model.predict_beam(src) # list of ints (word indices)
+        out = model.predict_beam(src, beam_size=1) # list of ints (word indices)
         ref = list(trg.data.squeeze())
         # Prepare sentence for bleu script
         remove_tokens = [TRG.vocab.stoi['<pad>'], TRG.vocab.stoi['<s>'], TRG.vocab.stoi['</s>']] 

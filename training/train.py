@@ -42,12 +42,11 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             debug_print_sentences = True
             if i is 0 and debug_print_sentences:
                 for k in range(src.size(1)):
-                    print(src.size(), trg.size())
                     src_bs1 = src.select(1,k).unsqueeze(1) # bs1 means batch size 1
                     trg_bs1 = trg.select(1,k).unsqueeze(1) 
                     model.eval() # predict mode
                     predictions = model.predict_beam(src_bs1, beam_size=1)
-                    predictions_beam = model.predict_beam(src_bs1, beam_size=5, TRG=TRG) # TRG for debug
+                    predictions_beam = model.predict_beam(src_bs1, beam_size=2)
                     model.train() # test mode
                     print('Source: ', ' '.join(SRC.vocab.itos[x] for x in src_bs1.squeeze().data))
                     print('Target: ', ' '.join(TRG.vocab.itos[x] for x in trg_bs1.squeeze().data))

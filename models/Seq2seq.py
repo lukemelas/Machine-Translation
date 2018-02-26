@@ -40,16 +40,16 @@ class Seq2seq(nn.Module):
         x = self.linear2(x)
         return x
 
-    def predict(self, src): # legacy implementation
+    def predict(self, src): 
+        '''Predict using greedy search'''
         return self.predict_beam(src, beam_size=1)
 
     def predict_beam(self, src, beam_size=1):
-        ### WARNING: ONLY RUN WITH BATCH SIZE = 1    
-        source = src.cuda() if use_gpu else batch.src
-        batch_size = source.size(1)
+        '''Predict using beam search. Works only when src has batch size 1: src.size(1)=1'''
         # Encode
+        source = src.cuda() if use_gpu else batch.src
         outputs_e, states = self.encoder(source) # batch size = 1
-        # Start sentence with '<s>'
+        # Start with '<s>'
         initial_sent = Variable(torch.zeros(1)).cuda() if use_gpu else Variable(torch.zeros(1)) 
         initial_start = Variable(torch.LongTensor([self.start_token_index])).cuda() if use_gpu else Variable(torch.LongTensor([self.start_token_index]))
         best_options = [(initial_sent, initial_start, states)] # beam
@@ -75,105 +75,12 @@ class Seq2seq(nn.Module):
                 else: # keep sentences ending in '</s>' as candidates
                     options.append((lprob, sentence, current_state))
             options.sort(key = lambda x: x[0].data[0], reverse=True) # sort options
-            best_options = options[:k] # sorts by first element, which is lprob.
+            best_options = options[:k] # sorts by first element (lprob)
         best_options.sort(key = lambda x: x[0].data[0], reverse=True)
         best_choice = best_options[0] # best overall sentence
         sentence = best_choice[1].data
-        out = list(sentence)
+        out = list(sentence) # return list of word indices (as ints)
         return out
 
-
-
-
-
-        # Final sentence predictions for full batch 
-        sents = [] #list (len bs) of list of sentences (word indices)  
-
-        # Encode
-        out_e, final_e = self.encoder(src)
-
-        # Loop through batches: make bs = 1 
-        for i in range(out_e.size(1)):
-            
-            # Initial hidden state is last state of encoder
-            state_d = tuple(x.select(1,i).unsqueeze(1).contiguous() for x in final_e)
-            
-            # Extract encoder for attention and source (for padding mask)
-            out_e_i = out_e.select(1,i).unsqueeze(1) # for attention
-            src_i = src.select(1,i).unsqueeze(1)     
-
-            # Create initial starting word '<s>'
-            word_index = self.start_token_index # '<s>'
-
-            # Store tuples of (sent, state, score) in beam
-            beam = [([word_index], state_d, 0)]
-            
-            # Store candidate sentences: length beam_size * vocab_size (really beam_size)
-            candidates = [] 
-
-            # Loop until max sentence length reached
-            for j in range(50): # max len = 15
-
-                # Stop if all sentences in beam end in '</s>'
-                stop = True
-                for sent, state, score in beam: # stop if all sentences 
-                    stop = stop and (sent[-1] is self.eos_token_index)
-                if stop is True: break
-                
-                # Loop through sentences in beam
-                for sent, state, score in beam:
-                    word = sent[-1]
-
-                    # If sentence already finished, keep it as a candidate
-                    if word is self.eos_token_index:
-                        candidates.append( (sent, state, score) )
-                        continue
-
-                    # Otherwise run through decoder
-                    word = Variable(torch.LongTensor([word_index]).view(1,1), requires_grad=False)
-                    if use_gpu: word = word.cuda()
-                    out_d, state = self.decoder(word, state)
-
-                    # Apply attention 
-                    context = self.attention(src_i, out_e_i, out_d)
-                    out_cat = torch.cat((out_d, context), dim=2) 
-
-                    # Pass through linear layer
-                    x = self.linear1(out_cat)
-                    x = self.linear2(x)
-                    x = x[0,0] # reshape (1 x 1 x vs --> vs) and do (manual) softmax
-                    x = x.exp() / x.exp().sum()
-                    
-                    # Get top (beam_size) words from distribution
-                    probs, words = x.topk(beam_size)
-                    for k in range(beam_size):
-                        word_index = words[k].data[0]
-                        word_score = probs[k].log().data[0] # score = log likelihood
-                        
-                        # Get sentence probabilities
-                        candidate_score = self.sentence_prob(score, word_score, len(sent)) # remove <s>
-                        #print('words ', words, 'word_index ', word_index,'probs ', probs, 'candidate_score ', score)
-                        candidates.append( (sent + [word_index], state, candidate_score) )
-
-                # Get put top (beam_size) candidates into beam
-                beam = sorted(candidates, key=lambda x: x[2])[-(beam_size):] 
-                candidates = [] # reset candidates for next beam
-
-                # PRINT PRINT SO SAR
-                #print([(' '.join(TRG.vocab.itos[x] for x in c[0]), '{:.3f}'.format(c[2])) for c in beam]) 
-
-            # Put top (1) sentence into final list of sentences
-            final_sent = max(beam, key=lambda x: x[2])[0] # extract top sentence
-            sents.append(final_sent[1:]) # remove <s> token
-
-        # Return final list of all sentences
-        return sents                
-
-    def sentence_prob(self, score, word_score, sent_length, hyperparam_alpha=0.6):
-        return score + word_score
-        # return (score * ((sent_length - 1) ** hyperparam_alpha) + word_score) / (sent_length ** hyperparam_alpha)
-
 # TODO
-# - fix beam search
-# - implement badhanau attention
 
