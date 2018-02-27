@@ -78,3 +78,4 @@ def moses_multi_bleu(outputs, references, lw=False):
     ref_file.close()
    
     return bleu_score
+

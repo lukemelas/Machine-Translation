@@ -20,3 +20,7 @@ chmod 755 scripts/multi-bleu.perl
 
 # # Download fasttext German embeddings
 # wget https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.de.vec
+
+# # Download Kaggle prediction file
+# wget https://www.dropbox.com/s/o3h0sd81pjdppyj/source_test.txt
+

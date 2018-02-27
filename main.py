@@ -1,4 +1,4 @@
-import argparse, os, datetime
+import argparse, os, datetime, time
 
 import torch
 import torch.nn as nn
@@ -11,7 +11,7 @@ from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
 
 parser = argparse.ArgumentParser(description='Language Model')
-parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learning rate, default: 2e-3')
+parser.add_argument('--lr', default=1e-2, type=float, metavar='N', help='learning rate, default: 1e-2')
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state, default: 300')
 parser.add_argument('--emb', default=300, type=int, metavar='N', help='embedding size, default: 300')
 parser.add_argument('--nlayers', default=2, type=int, metavar='N', help='number of layers in rnn, default: 2')
@@ -33,8 +33,9 @@ def main():
     use_gpu = torch.cuda.is_available()
 
     # Load and process data
+    time_data = time.time()
     SRC, TRG, train_iter, val_iter = preprocess(args.v, args.b)
-    print('Loaded data. |TRG| = {}'.format(len(TRG.vocab)))
+    print('Loaded data. |TRG| = {}. Time: {:.2f}.'.format(len(TRG.vocab), time.time() - time_data))
     
     # Load embeddings if available
     LOAD_EMBEDDINGS = True
@@ -48,7 +49,7 @@ def main():
         embedding_trg = (torch.rand(len(TRG.vocab), args.emb) - 0.5) * 2
         print('Initialized embedding vectors')
 
-    # Create model # perhaps try pretrained: # SRC.vocab.vectors.clone()
+    # Create model 
     model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, args.attn, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>'], pad_token_index=TRG.vocab.stoi['<pad>']) 
 
     # Load pretrained model 
@@ -65,8 +66,8 @@ def main():
     # Create loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=weight) 
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.1, verbose=True, cooldown=6)
-        #MultiStepLR(optimizer, milestones=[30, 80], gamma=0.1)
+    #scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.1, verbose=True, cooldown=6)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7,8,9,10,11,12,13,14], gamma=0.5)
   
     # Create directory for logs, create logger, log hyperparameters
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
@@ -76,7 +77,7 @@ def main():
     
     # Train, validate, or predict
     if args.predict is not None:
-        predict.predict(model, args.predict, args.predict_outfile, SRC, TRG)
+        predict.predict(model, args.predict, args.predict_outfile, SRC, TRG, logger)
     elif args.evaluate:
         valid.validate(val_iter, model, criterion, SRC, TRG, logger)
     else:

@@ -1,47 +1,28 @@
-import os 
+import os, sys
 import torch
+import torch.nn as nn
 from torch.autograd import Variable
-import torchtext
 use_gpu = torch.cuda.is_available()
 
-def predict(model, datafile, TEXT, print_preds=False, fname='preds.txt'):
-    raise NotImplementedError()
-
-    print(''' 
-  FROM LANGUAGE MODELING  
-
-  model.eval()
-  
-  with open(os.path.join(datafile, fname), 'w') as fout:
-    print('id,word', file=fout) # header
-    for i, line in enumerate(open(os.path.join(datafile, 'input.txt')), 1): # iterate over lines
-      sentence = [TEXT.vocab.stoi[word] for word in line.split(' ')]
-      sentence = Variable(torch.LongTensor(sentence).view(-1,1), volatile=True)
-      sentence = sentence.cuda() if use_gpu else sentence
-      
-      # Prepare initial hidden state of zeros 
-      num_layers, batch_size, hidden_size = model.num_layers, 1, model.hidden_size
-      init = Variable(torch.zeros(num_layers, batch_size, hidden_size), requires_grad=False)
-      init = init.cuda() if use_gpu else init
-      states = (init, init.clone())
-      # Run model and get predictions 
-      outputs, states = model(sentence, states)
-      
-      # Get predictions after 10 words
-      outputs = outputs[9].squeeze()
-      
-      # Remove '<eos>' from predictions
-      outputs[TEXT.vocab.stoi['<eos>']] = -1000
-      
-      # Get top 20 predictions
-      scores, preds = outputs.topk(20)
-      preds = preds.data.tolist()
-      
-      # Save to output file
-      print("{},{}".format(str(i), ' '.join([TEXT.vocab.itos[i] for i in preds])), file=fout)
-      
-      # For debugging: print our predictions 
-      if print_preds and i < 10:
-        print('{}  --> {}'.format(line, ', '.join([TEXT.vocab.itos[i] for i in preds])))
-''')
-
+# called from main.py: predict.predict(model, args.predict, args.predict_outfile, SRC, TRG, logger)
+def predict(model, infile, outfile, SRC, TRG, logger):
+    model.eval()
+    with open(infile, 'r') as in_f, open(outfile, 'w') as out_f:
+        for i, line in enumerate(in_f):
+            print(line)
+            sent_german = line.split(' ') # next turn sentence into ints 
+            sent_indices = [SRC.vocab.stoi[word] if word in SRC.vocab.stoi else SRC.vocab.stoi['<unk>'] for word in sent_german]
+            sent = Variable(torch.LongTensor([sent_indices]), volatile=True)
+            if use_gpu: sent = sent.cuda()
+            sent = sent.view(-1,1) # reshape to sl x bs
+            # Predict with beam search 
+            preds = model.predict_100(sent, beam_size=5) # predicts list of 100 lists of size 3
+            final_preds = '' # string of the form word1|
+            for pred in preds: # pred is list of size 3
+                final_preds = final_preds + '{}|{}|{} '.format(preds[0], preds[1], preds[2])
+            final_preds = final_preds.replace("\"", "<quote>").replace(",", "<comma>") # for Kaggle
+            print(final_preds, file=out_f) # add to output file
+            if i % 10 == 0: # log first 100 chars of each 10th prediction
+                logger.log('German: {}\nEnglish: {}\n'.format(sent_german, final_preds[0:100]))
+        logger.log('Finished predicting')
+    return 

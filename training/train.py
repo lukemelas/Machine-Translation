@@ -49,14 +49,14 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
                     predictions = model.predict_beam(src_bs1, beam_size=1)
                     predictions_beam = model.predict_beam(src_bs1, beam_size=2)
                     model.train() # test mode
-                    print('Source: ', ' '.join(SRC.vocab.itos[x] for x in src_bs1.squeeze().data))
-                    print('Target: ', ' '.join(TRG.vocab.itos[x] for x in trg_bs1.squeeze().data))
-                    probs, maxwords = torch.max(scores.data.select(1,k), dim=1) # training predictions
-                    print('Training Pred: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
-                    print('Validation Greedy Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions))
-                    print('Validation Beam Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions_beam)) 
-                    print()
-                return
+                    probs, maxwords = torch.max(scores.data.select(1,k), dim=1) # training mode
+                    logger.log('Source: ', ' '.join(SRC.vocab.itos[x] for x in src_bs1.squeeze().data))
+                    logger.log('Target: ', ' '.join(TRG.vocab.itos[x] for x in trg_bs1.squeeze().data))
+                    logger.log('Training Pred: ', ' '.join(TRG.vocab.itos[x] for x in maxwords))
+                    logger.log('Validation Greedy Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions))
+                    logger.log('Validation Beam Pred: ', ' '.join(TRG.vocab.itos[x] for x in predictions_beam)) 
+                    logger.log()
+                return # end after debugging
 
             # Remove <s> from trg and </s> from scores
             scores = scores[:-1]
