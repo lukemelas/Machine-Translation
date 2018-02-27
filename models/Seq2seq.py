@@ -21,6 +21,8 @@ class Seq2seq(nn.Module):
         self.attention = Attention(pad_token=pad_token_index, bidirectional=bi, attn_type=attn_type)
         # Create linear layers to combine context and hidden state
         self.linear1 = nn.Linear(2 * self.h_dim, self.h_dim)
+        self.tanh = nn.Tanh()
+        self.dropout = nn.Dropout(dropout_p)
         self.linear2 = nn.Linear(self.h_dim, self.vocab_size_trg)
         # Tie weights of decoder embedding and output 
         if True and self.decoder.embedding.weight.size() == self.linear2.weight.size(): # weight tying
@@ -37,6 +39,7 @@ class Seq2seq(nn.Module):
         out_cat = torch.cat((out_d, context), dim=2) 
         # Predict (returns probabilities)
         x = self.linear1(out_cat)
+        x = self.dropout(self.tanh(x))
         x = self.linear2(x)
         return x
 
@@ -76,6 +79,7 @@ class Seq2seq(nn.Module):
                     context = self.attention(source, outputs_e, outputs_d)
                     out_cat = torch.cat((outputs_d, context), dim=2)
                     x = self.linear1(out_cat)
+                    x = self.dropout(self.tanh(x))
                     x = self.linear2(x)
                     x = x.squeeze()
                     probs = x.exp() / x.exp().sum()

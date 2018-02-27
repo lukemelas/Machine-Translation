@@ -66,15 +66,15 @@ def main():
 
     # Create loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=weight) 
-    optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
-    #scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.1, verbose=True, cooldown=6)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7,8,9,10,11,12,13,14], gamma=0.5)
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.25, verbose=True, cooldown=6)
+    #scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,13,16,19], gamma=0.5)
   
     # Create directory for logs, create logger, log hyperparameters
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
     os.makedirs(path, exist_ok=True)
     logger = Logger(path)
-    logger.log('ARGS: {}\nOPTIMIZER: {}\nSCHEDULER: {}\nMODEL: {}\n'.format(args, optimizer, scheduler, model), stdout=False)
+    logger.log('ARGS: {}\nOPTIMIZER: {}\nLEARNING RATE: {}\nSCHEDULER: {}\nMODEL: {}\n'.format(args, optimizer, args.lr, vars(scheduler), model), stdout=False)
     
     # Train, validate, or predict
     if args.predict_from_input is not None:
