@@ -34,3 +34,6 @@ For example, we found the following hyperparameters worked well:
 -->
 
 <!-- cp .data/iwslt/de-en/train.de-en-full.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-full.de .data/iwslt/de-en/train.de-en.de -->
+<!-- cp .data/iwslt/de-en/train.de-en-small.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-small.de .data/iwslt/de-en/train.de-en.de -->
+
+

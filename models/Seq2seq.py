@@ -40,22 +40,32 @@ class Seq2seq(nn.Module):
         x = self.linear2(x)
         return x
 
-    def predict(self, src): 
-        '''Predict using greedy search'''
-        return self.predict_beam(src, beam_size=1)
+    def predict(self, src, beam_size=1): 
+        '''Predict top 1 sentence using beam search. Note that beam_size=1 is greedy search.'''
+        beam_outputs = self.beam_search(src, beam_size, max_len=30) # returns top beam_size options (as list of tuples)
+        beam_outputs.sort(key = lambda x: x[0].data[0], reverse=True) # sort by score
+        top1 = list(beam_outputs[0][1].data) # a list of word indices (as ints)
+        return top1
 
-    def predict_beam(self, src, beam_size=1):
-        '''Predict using beam search. Works only when src has batch size 1: src.size(1)=1'''
+    def predict_k(self, src, k, max_len=100):
+        '''Predict top k possibilities for first 3 words.'''
+        beam_outputs = self.beam_search(src, k, max_len=max_len) # returns top k options (as list of tuples)
+        beam_outputs.sort(key = lambda x: x[0].data[0], reverse=True) # sort by score
+        topk = [list(option[1].data) for option in beam_outputs] # list of k lists of word indices (as ints)
+        return topk
+
+    def beam_search(self, src, beam_size, max_len):
+        '''Returns top beam_size sentences using beam search. Works only when src has batch size 1.'''
         # Encode
         source = src.cuda() if use_gpu else batch.src
         outputs_e, states = self.encoder(source) # batch size = 1
         # Start with '<s>'
-        initial_sent = Variable(torch.zeros(1)).cuda() if use_gpu else Variable(torch.zeros(1)) 
-        initial_start = Variable(torch.LongTensor([self.start_token_index])).cuda() if use_gpu else Variable(torch.LongTensor([self.start_token_index]))
-        best_options = [(initial_sent, initial_start, states)] # beam
+        initial_score = Variable(torch.zeros(1)).cuda() if use_gpu else Variable(torch.zeros(1)) 
+        initial_sent = Variable(torch.LongTensor([self.start_token_index])).cuda() if use_gpu else Variable(torch.LongTensor([self.start_token_index]))
+        best_options = [(initial_score, initial_sent, states)] # beam
         # Beam search
         k = beam_size # store best k options
-        for length in range(50): # maximum target length
+        for length in range(max_len): # maximum target length
             options = [] # candidates 
             for lprob, sentence, current_state in best_options:
                 last_word = sentence[-1]
@@ -69,18 +79,14 @@ class Seq2seq(nn.Module):
                     x = self.linear2(x)
                     x = x.squeeze()
                     probs = x.exp() / x.exp().sum()
+                    lprobs = torch.log(probs)
                     # Add top k candidates to options list for next word
-                    for index in torch.topk(probs, k)[1]: 
-                        options.append((torch.add(probs[index], lprob), torch.cat([sentence, index]), new_state))
+                    for index in torch.topk(lprobs, k)[1]: 
+                        options.append((torch.add(lprobs[index], lprob), torch.cat([sentence, index]), new_state))
                 else: # keep sentences ending in '</s>' as candidates
                     options.append((lprob, sentence, current_state))
             options.sort(key = lambda x: x[0].data[0], reverse=True) # sort options
             best_options = options[:k] # sorts by first element (lprob)
         best_options.sort(key = lambda x: x[0].data[0], reverse=True)
-        best_choice = best_options[0] # best overall sentence
-        sentence = best_choice[1].data
-        out = list(sentence) # return list of word indices (as ints)
-        return out
-
-# TODO
+        return best_options
 

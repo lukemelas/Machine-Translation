@@ -11,7 +11,7 @@ from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
 
 parser = argparse.ArgumentParser(description='Language Model')
-parser.add_argument('--lr', default=1e-2, type=float, metavar='N', help='learning rate, default: 1e-2')
+parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learning rate, default: 2e-3')
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state, default: 300')
 parser.add_argument('--emb', default=300, type=int, metavar='N', help='embedding size, default: 300')
 parser.add_argument('--nlayers', default=2, type=int, metavar='N', help='number of layers in rnn, default: 2')
@@ -25,6 +25,7 @@ parser.add_argument('--model', metavar='DIR', default=None, help='path to model,
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model, default: False')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions, default: None')
 parser.add_argument('--predict_outfile', metavar='DIR', default='data/preds.txt', help='file to output final predictions, default: "data/preds.txt"')
+parser.add_argument('--predict_from_input', metavar='STR', default=None, help='German sentence to translate')
 parser.set_defaults(evaluate=False, bi=True)
 
 def main():
@@ -65,7 +66,7 @@ def main():
 
     # Create loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=weight) 
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
+    optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
     #scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.1, verbose=True, cooldown=6)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[7,8,9,10,11,12,13,14], gamma=0.5)
   
@@ -73,10 +74,12 @@ def main():
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
     os.makedirs(path, exist_ok=True)
     logger = Logger(path)
-    logger.log('ARGS: {}, MODEL, {}'.format(args, model), stdout=False)
+    logger.log('ARGS: {}\nOPTIMIZER: {}\nSCHEDULER: {}\nMODEL: {}\n'.format(args, optimizer, scheduler, model), stdout=False)
     
     # Train, validate, or predict
-    if args.predict is not None:
+    if args.predict_from_input is not None:
+        predict.predict_from_input(model, args.predict_from_input, SRC, TRG, logger)
+    elif args.predict is not None:
         predict.predict(model, args.predict, args.predict_outfile, SRC, TRG, logger)
     elif args.evaluate:
         valid.validate(val_iter, model, criterion, SRC, TRG, logger)
