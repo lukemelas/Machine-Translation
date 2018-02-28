@@ -51,7 +51,8 @@ def main():
         print('Initialized embedding vectors')
 
     # Create model 
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, args.attn, start_token_index=TRG.vocab.stoi['<s>'], eos_token_index=TRG.vocab.stoi['</s>'], pad_token_index=TRG.vocab.stoi['<pad>']) 
+    tokens = [TRG.vocab.stoi[x] for x in ['<s>', '</s>', '<pad>', '<unk>']]
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, args.attn, tokens_bos_eos_pad_unk=tokens)
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):

@@ -18,14 +18,13 @@ def predict(model, infile, outfile, SRC, TRG, logger):
             sent = sent.view(-1,1) # reshape to sl x bs
             # Predict with beam search 
             final_preds = '{},'.format(i+1) # string of the form id,word1|word2|word3 word1|word2|word3 ...
-            preds = model.predict_k(sent, 10, max_len=3) # predicts list of 100 lists of size 3
+            remove_tokens = [TRG.vocab.stoi['</s>'], TRG.vocab.stoi['<unk>']] # block predictions of <eos> and <unk>
+            preds = model.predict_k(sent, 100, max_len=3, remove_tokens=remove_tokens) # predicts list of 100 lists of size 3
             for pred in preds: # pred is list of size 3
                 pred = pred[1:] # remove '<s>' from start of sentence
                 pred = [TRG.vocab.itos[index] for index in pred] # convert indices to strings
                 pred = [word.replace("\"", "<quote>").replace(",", "<comma>") for word in pred] # for Kaggle
-                if len(pred) != 3: # if sentence too short, skip it
-                    print('TOO SHORT: ', pred)
-                    continue
+                if len(pred) != 3: print('TOO SHORT: ', pred); continue # should not occur; just in case
                 final_preds = final_preds + '{p[0]}|{p[1]}|{p[2]} '.format(p=pred) # for Kaggle
             print(final_preds, file=out_f) # add to output file
             if i % 25 == 0: # log first 100 chars of each 10th prediction
@@ -39,11 +38,12 @@ def predict_from_input(model, input_sentence, SRC, TRG, logger):
     sent = Variable(torch.LongTensor([sent_indices]), volatile=True) 
     if use_gpu: sent = sent.cuda()
     sent = sent.view(-1,1) # reshape to sl x bs
-    logger.log('German: ' + ' '.join([SRC.vocab.itos[index] for index in sent[0]]))
+    logger.log('German: ' + ' '.join([SRC.vocab.itos[index] for index in sent_indices]))
     # Predict five sentences with beam search 
     preds = model.predict_k(sent, 5) # returns list of 5 lists of word indices
-    for k in range(len(preds)): # loop over top 5 sentences
-        out = str(k) + ': ' + ' '.join([TRG.vocab.itos[index] for index in preds[k][1]])
+    for i, pred in enumerate(preds): # loop over top 5 sentences
+        pred = [index for index in pred if index not in [TRG.vocab.stoi['<s>'], TRG.vocab.stoi['</s>']]]
+        out = str(i+1) + ': ' + ' '.join([TRG.vocab.itos[index] for index in pred])
         logger.log(out)
     return 
 

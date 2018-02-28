@@ -62,6 +62,11 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = scores[:-1]
             trg = trg[1:]           
 
+            # # NO NO NO
+            # if len(trg) > 3:
+            #     scores = scores[:3]
+            #     trg = trg[:3]
+
             # Reshape for loss function
             scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
             trg = trg.view(scores.size(0))
