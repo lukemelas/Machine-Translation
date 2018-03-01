@@ -52,7 +52,6 @@ def validate_losses(val_iter, model, criterion, logger):
         num_words = (trg != 0).float().sum()
         # Calculate loss
         loss = criterion(scores, trg) 
-        loss.backward()
         losses.update(loss.data[0])
     logger.log('Average loss on validation: {:.3f}'.format(losses.avg))
     return losses.avg

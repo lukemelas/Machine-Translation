@@ -26,7 +26,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         logger.log('Validation time: {:.3f}'.format(val_time - start_time))
 
         # Validate model with teacher forcing (for PPL)
-        val_loss = validate_losses(val_iter, model, criterion, logger) 
+        val_loss = 0 #validate_losses(val_iter, model, criterion, logger) 
         logger.log('PPL: {:.3f}'.format(torch.FloatTensor([val_loss]).exp()[0])) 
 
         # Step learning rate scheduler
@@ -80,7 +80,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             optimizer.step()
 
             # Log within epoch
-            if i % 1000 == 999:
+            if i % 1000 == 10:
                 logger.log('''Epoch [{e}/{num_e}]\t Batch [{b}/{num_b}]\t Loss: {l:.3f}'''.format(e=epoch+1, num_e=num_epochs, b=i, num_b=len(train_iter), l=losses.avg))
 
         # Log after each epoch
