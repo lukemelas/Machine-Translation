@@ -17,7 +17,7 @@ class Attention(nn.Module):
         elif self.attn_type is 'additive':
             self.linear = nn.Linear(2 * self.h_dim, self.h_dim)
             self.tanh = nn.Tanh()
-        #self.softmax = nn.Softmax()
+        self.softmax = nn.Softmax()
 
     def forward(self, in_e, out_e, out_d):
 
@@ -38,8 +38,10 @@ class Attention(nn.Module):
             attn = self.linear(torch.cat((out_e, out_d), dim=2)) # --> b x sl x tl
 
         # Apply attn to encoder outputs
-        attn = attn.exp() / attn.exp().sum(dim=1).unsqueeze(1) # in updated pytorch, make softmax
-        context = attn.transpose(1,2).bmm(out_e) # --> b x lt x hd
+        # attn = torch.nn.functional.softmax(attn)
+        attn = attn.exp() / attn.exp().sum(dim=1, keepdim=True) # in updated pytorch, make softmax
+        attn = attn.transpose(1,2) # --> b x tl x sl
+        context = attn.bmm(out_e) # --> b x lt x hd
         context = context.transpose(0,1) # --> lt x b x hd
         return context
 

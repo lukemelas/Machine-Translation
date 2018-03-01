@@ -20,7 +20,7 @@ parser.add_argument('--unidir', dest='bi', action='store_false', help='use unidi
 parser.add_argument('--attn', default='dot-product', type=str, metavar='STR', help='attention type: dot-product or additive, default: dot-product ')
 parser.add_argument('-v', default=0, type=int, metavar='N', help='vocab size, use 0 for maximum size, default: 0')
 parser.add_argument('-b', default=64, type=int, metavar='N', help='batch size, default: 64')
-parser.add_argument('--epochs', default=15, type=int, metavar='N', help='number of epochs, default: 15')
+parser.add_argument('--epochs', default=50, type=int, metavar='N', help='number of epochs, default: 15')
 parser.add_argument('--model', metavar='DIR', default=None, help='path to model, default: None')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model, default: False')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions, default: None')
@@ -68,8 +68,8 @@ def main():
     # Create loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=weight) 
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=3, factor=0.25, verbose=True, cooldown=6)
-    #scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,13,16,19], gamma=0.5)
+    #scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=30, factor=0.25, verbose=True, cooldown=6)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,13,16,19], gamma=0.5)
   
     # Create directory for logs, create logger, log hyperparameters
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
@@ -78,6 +78,7 @@ def main():
     logger.log('ARGS: {}\nOPTIMIZER: {}\nLEARNING RATE: {}\nSCHEDULER: {}\nMODEL: {}\n'.format(args, optimizer, args.lr, vars(scheduler), model), stdout=False)
     
     # Train, validate, or predict
+    start_time = time.time()
     if args.predict_from_input is not None:
         predict.predict_from_input(model, args.predict_from_input, SRC, TRG, logger)
     elif args.predict is not None:
@@ -86,6 +87,7 @@ def main():
         valid.validate(val_iter, model, criterion, SRC, TRG, logger)
     else:
         train.train(train_iter, val_iter, model, criterion, optimizer,scheduler, SRC, TRG, args.epochs, logger)
+    logger.log('Finished in {}'.format(time.time() - start_time))
     return
 
 if __name__ == '__main__':

@@ -34,3 +34,26 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
     # Log information after validation
     logger.log('Validation complete. BLEU: {bleu:.3f}'.format(bleu=bleu))
     return bleu
+
+def validate_losses(val_iter, model, criterion, logger):
+    '''Calculate losses by teacher forcing on the validation set'''
+    model.eval()
+    losses = AverageMeter()
+    for i, batch in enumerate(val_iter): 
+        src = batch.src.cuda() if use_gpu else batch.src
+        trg = batch.trg.cuda() if use_gpu else batch.trg
+        # Forward 
+        scores = model(src, trg)
+        scores = scores[:-1]
+        trg = trg[1:]           
+        # Reshape for loss function
+        scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
+        trg = trg.view(scores.size(0))
+        num_words = (trg != 0).float().sum()
+        # Calculate loss
+        loss = criterion(scores, trg) 
+        loss.backward()
+        losses.update(loss.data[0])
+    logger.log('Average loss on validation: {:.3f}'.format(losses.avg))
+    return losses.avg
+    

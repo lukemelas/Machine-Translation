@@ -12,7 +12,7 @@ class Seq2seq(nn.Module):
         super(Seq2seq, self).__init__()
         # Store hyperparameters
         self.h_dim = h_dim
-        self.vocab_size_trg = embedding_trg.size(0)
+        self.vocab_size_trg, self.emb_dim_trg = embedding_trg.size()
         self.bos_token = tokens_bos_eos_pad_unk[0]
         self.eos_token = tokens_bos_eos_pad_unk[1] 
         self.pad_token = tokens_bos_eos_pad_unk[2] 
@@ -20,14 +20,14 @@ class Seq2seq(nn.Module):
         # Create encoder, decoder, attention
         self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p, bidirectional=bi)
         self.decoder = DecoderLSTM(embedding_trg, h_dim, num_layers * 2 if bi else num_layers, dropout_p=dropout_p)
-        self.attention = Attention(pad_token=self.pad_token, bidirectional=bi, attn_type=attn_type)
+        self.attention = Attention(pad_token=self.pad_token, bidirectional=bi, attn_type=attn_type, h_dim=self.h_dim)
         # Create linear layers to combine context and hidden state
-        self.linear1 = nn.Linear(2 * self.h_dim, self.h_dim)
+        self.linear1 = nn.Linear(2 * self.h_dim, self.emb_dim_trg)
         self.tanh = nn.Tanh()
         self.dropout = nn.Dropout(dropout_p)
-        self.linear2 = nn.Linear(self.h_dim, self.vocab_size_trg)
+        self.linear2 = nn.Linear(self.emb_dim_trg, self.vocab_size_trg)
         # Tie weights of decoder embedding and output 
-        if True and self.decoder.embedding.weight.size() == self.linear2.weight.size(): # weight tying
+        if True and self.decoder.embedding.weight.size() == self.linear2.weight.size():
             print('Weight tying!')
             self.linear2.weight = self.decoder.embedding.weight
 
@@ -84,10 +84,9 @@ class Seq2seq(nn.Module):
                     x = self.dropout(self.tanh(x))
                     x = self.linear2(x)
                     x = x.squeeze()
-                    # Block predictions of remove_tokens
-                    for t in remove_tokens:
-                        x[t] = 0
                     lprobs = torch.log(x.exp() / x.exp().sum()) # log softmax
+                    # Block predictions of tokens in remove_tokens
+                    for t in remove_tokens: lprobs[t] = -10e10
                     # Add top k candidates to options list for next word
                     for index in torch.topk(lprobs, k)[1]: 
                         options.append((torch.add(lprobs[index], lprob), torch.cat([sentence, index]), new_state))

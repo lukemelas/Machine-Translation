@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 use_gpu = torch.cuda.is_available()
 
-from .valid import validate
+from .valid import validate, validate_losses
 from utils.utils import AverageMeter
 
 def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG, num_epochs, logger=None):  
@@ -15,7 +15,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
     bleu_best = -1
     for epoch in range(num_epochs):
     
-        # Validate model
+        # Validate model with BLEU
         start_time = time.time() # timer 
         bleu_val = validate(val_iter, model, criterion, SRC, TRG, logger)
         if bleu_val > bleu_best:
@@ -23,14 +23,18 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             logger.save_model(model.state_dict())
             logger.log('New best: {:.3f}'.format(bleu_best))
         val_time = time.time()
-        print('Validation time: {:.3f}'.format(val_time - start_time))
+        logger.log('Validation time: {:.3f}'.format(val_time - start_time))
+
+        # Validate model with teacher forcing (for PPL)
+        val_loss = validate_losses(val_iter, model, criterion, logger) 
+        logger.log('PPL: {:.3f}'.format(torch.FloatTensor([val_loss]).exp()[0])) 
 
         # Step learning rate scheduler
         scheduler.step(bleu_val) # input bleu score
 
         # Train model
-        losses = AverageMeter()
         model.train()
+        losses = AverageMeter()
         for i, batch in enumerate(train_iter): 
             src = batch.src.cuda() if use_gpu else batch.src
             trg = batch.trg.cuda() if use_gpu else batch.trg
@@ -62,11 +66,6 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             scores = scores[:-1]
             trg = trg[1:]           
 
-            # # NO NO NO
-            # if len(trg) > 3:
-            #     scores = scores[:3]
-            #     trg = trg[:3]
-
             # Reshape for loss function
             scores = scores.view(scores.size(0) * scores.size(1), scores.size(2))
             trg = trg.view(scores.size(0))
@@ -77,7 +76,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
             losses.update(loss.data[0])
 
             # Clip gradient norms and step optimizer
-            torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
+            torch.nn.utils.clip_grad_norm(model.parameters(), 1.0)
             optimizer.step()
 
             # Log within epoch
@@ -86,10 +85,5 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
 
         # Log after each epoch
         logger.log('''Epoch [{e}/{num_e}] complete. Loss: {l:.3f}'''.format(e=epoch+1, num_e=num_epochs, l=losses.avg))
-        print('Training time: {:.3f}'.format(time.time() - val_time))
+        logger.log('Training time: {:.3f}'.format(time.time() - val_time))
         
-        # # DEBUG
-        # if epoch % 3 == 2:
-        #     torch.save(model.state_dict(), 'saves/model.pkl')
-    
-    
