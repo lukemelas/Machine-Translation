@@ -65,6 +65,7 @@ class Seq2seq(nn.Module):
         source = src.cuda() if use_gpu else batch.src
         outputs_e, states = self.encoder(source) # batch size = 1
         # Start with '<s>'
+        initial_score = 0
         initial_score = Variable(torch.zeros(1), volatile=True)
         if use_gpu: initial_score = initial_score.cuda()
         initial_sent = Variable(torch.LongTensor([self.bos_token]), volatile=True)
@@ -91,7 +92,9 @@ class Seq2seq(nn.Module):
                     lprobs = torch.log(x.exp() / x.exp().sum()) # log softmax
                     # Add top k candidates to options list for next word
                     for index in torch.topk(lprobs, k)[1]: 
-                        options.append((torch.add(lprobs[index], lprob), torch.cat([sentence, index]), new_state))
+                        option = (torch.add(lprobs[index], lprob), torch.cat([sentence, index]), new_state) 
+                        print(option)
+                        options.append(option)
                 else: # keep sentences ending in '</s>' as candidates
                     options.append((lprob, sentence, current_state))
             options.sort(key = lambda x: x[0].data[0], reverse=True) # sort by lprob
