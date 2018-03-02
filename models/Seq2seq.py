@@ -65,8 +65,10 @@ class Seq2seq(nn.Module):
         source = src.cuda() if use_gpu else batch.src
         outputs_e, states = self.encoder(source) # batch size = 1
         # Start with '<s>'
-        initial_score = Variable(torch.zeros(1)).cuda() if use_gpu else Variable(torch.zeros(1)) 
-        initial_sent = Variable(torch.LongTensor([self.bos_token])).cuda() if use_gpu else Variable(torch.LongTensor([self.bos_token]))
+        initial_score = Variable(torch.zeros(1), volatile=True)
+        if use_gpu: initial_score = initial_score.cuda()
+        initial_sent = Variable(torch.LongTensor([self.bos_token]), volatile=True)
+        if use_gpu: initial_sent = initial_sent.cuda()
         best_options = [(initial_score, initial_sent, states)] # beam
         # Beam search
         k = beam_size # store best k options
