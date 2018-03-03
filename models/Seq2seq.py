@@ -48,15 +48,13 @@ class Seq2seq(nn.Module):
     def predict(self, src, beam_size=1): 
         '''Predict top 1 sentence using beam search. Note that beam_size=1 is greedy search.'''
         beam_outputs = self.beam_search(src, beam_size, max_len=30) # returns top beam_size options (as list of tuples)
-        beam_outputs.sort(key = lambda x: x[0].data[0], reverse=True) # sort by score
-        top1 = list(beam_outputs[0][1].data) # a list of word indices (as ints)
+        top1 = beam_outputs[0][1] # a list of word indices (as ints)
         return top1
 
     def predict_k(self, src, k, max_len=30, remove_tokens=[]):
         '''Predict top k possibilities for first max_len words.'''  
         beam_outputs = self.beam_search(src, k, max_len=max_len, remove_tokens=remove_tokens) # returns top k options (as list of tuples)
-        beam_outputs.sort(key = lambda x: x[0].data[0], reverse=True) # sort by score
-        topk = [list(option[1].data) for option in beam_outputs] # list of k lists of word indices (as ints)
+        topk = [option[1] for option in beam_outputs] # list of k lists of word indices (as ints)
         return topk
 
     def beam_search(self, src, beam_size, max_len, remove_tokens=[]):
@@ -65,40 +63,39 @@ class Seq2seq(nn.Module):
         source = src.cuda() if use_gpu else batch.src
         outputs_e, states = self.encoder(source) # batch size = 1
         # Start with '<s>'
-        initial_score = 0
-        initial_score = Variable(torch.zeros(1), volatile=True)
-        if use_gpu: initial_score = initial_score.cuda()
-        initial_sent = Variable(torch.LongTensor([self.bos_token]), volatile=True)
-        if use_gpu: initial_sent = initial_sent.cuda()
-        best_options = [(initial_score, initial_sent, states)] # beam
+        init_lprob = -1e10
+        init_sent = [self.bos_token]
+        best_options = [(init_lprob, init_sent, states)] # beam
         # Beam search
         k = beam_size # store best k options
         for length in range(max_len): # maximum target length
             options = [] # candidates 
             for lprob, sentence, current_state in best_options:
+                # Prepare last word
                 last_word = sentence[-1]
-                if last_word.data[0] != self.eos_token:
+                if last_word != self.eos_token:
+                    last_word_input = Variable(torch.LongTensor([last_word]), volatile=True).view(1,1)
+                    if use_gpu: last_word_input = last_word_input.cuda()
                     # Decode
-                    outputs_d, new_state = self.decoder(last_word.unsqueeze(1), current_state)
+                    outputs_d, new_state = self.decoder(last_word_input, current_state)
                     # Attend
                     context = self.attention(source, outputs_e, outputs_d)
                     out_cat = torch.cat((outputs_d, context), dim=2)
                     x = self.linear1(out_cat)
                     x = self.dropout(self.tanh(x))
                     x = self.linear2(x)
-                    x = x.squeeze()
+                    x = x.squeeze().data.clone()
                     # Block predictions of tokens in remove_tokens
                     for t in remove_tokens: x[t] = -10e10
                     lprobs = torch.log(x.exp() / x.exp().sum()) # log softmax
                     # Add top k candidates to options list for next word
                     for index in torch.topk(lprobs, k)[1]: 
-                        option = (torch.add(lprobs[index], lprob), torch.cat([sentence, index]), new_state) 
-                        print(option)
+                        option = (float(lprobs[index]) + lprob, sentence + [index], new_state) 
                         options.append(option)
                 else: # keep sentences ending in '</s>' as candidates
                     options.append((lprob, sentence, current_state))
-            options.sort(key = lambda x: x[0].data[0], reverse=True) # sort by lprob
+            options.sort(key = lambda x: x[0], reverse=True) # sort by lprob
             best_options = options[:k] # place top candidates in beam
-        best_options.sort(key = lambda x: x[0].data[0], reverse=True)
+        best_options.sort(key = lambda x: x[0], reverse=True)
         return best_options
 

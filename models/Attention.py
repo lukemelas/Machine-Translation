@@ -18,7 +18,7 @@ class Attention(nn.Module):
         if self.attn_type == 'additive':
             self.linear = nn.Linear(2 * self.h_dim, self.h_dim)
             self.tanh = nn.Tanh()
-            self.vector = nn.Parameter(torch.Tensor(self.h_dim))
+            self.vector = nn.Parameter(torch.zeros(self.h_dim))
         self.softmax = nn.Softmax()
 
     def forward(self, in_e, out_e, out_d):
