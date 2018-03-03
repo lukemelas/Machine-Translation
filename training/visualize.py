@@ -20,7 +20,7 @@ def visualize(train_iter, model, SRC, TRG, logger):
             trg = batch.trg.cuda() if use_gpu else batch.trg
             scores, attn_dist = model.get_attn_dist(src, trg)
             # Loop over items in minibatch
-            for k in range(2, 8): # src.size(1) = bs (= 64)
+            for k in range(src.size(1)): # src.size(1) = bs (= 64)
                 src_bs1 = src.select(1,k).unsqueeze(1) # bs1 means batch size 1
                 trg_bs1 = trg.select(1,k).unsqueeze(1) 
                 attn_dist_bs1 = attn_dist.select(0,k)
@@ -63,7 +63,7 @@ def display_visual(src_list, trg_list, attn_dist, file_ext=''):
     ax.set_yticklabels([''] + trg_list) # axes
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1)) # labels
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1)) # labels 
-    plt.savefig('saves/visualizations/attn' + file_ext + '.jpg')
+    plt.savefig('scripts/visualizations/attn' + file_ext + '.jpg')
     #plt.show()
 
 if __name__ == '__main__':
