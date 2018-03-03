@@ -8,7 +8,7 @@ from .Decoder import DecoderLSTM
 from .Attention import Attention
 
 class Seq2seq(nn.Module):
-    def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, bi, attn_type, tokens_bos_eos_pad_unk=[0,1,2,3]):
+    def __init__(self, embedding_src, embedding_trg, h_dim, num_layers, dropout_p, bi, attn_type, tokens_bos_eos_pad_unk=[0,1,2,3], reverse_input=False):
         super(Seq2seq, self).__init__()
         # Store hyperparameters
         self.h_dim = h_dim
@@ -17,6 +17,7 @@ class Seq2seq(nn.Module):
         self.eos_token = tokens_bos_eos_pad_unk[1] 
         self.pad_token = tokens_bos_eos_pad_unk[2] 
         self.unk_token = tokens_bos_eos_pad_unk[3] 
+        self.reverse_input = reverse_input
         # Create encoder, decoder, attention
         self.encoder = EncoderLSTM(embedding_src, h_dim, num_layers, dropout_p=dropout_p, bidirectional=bi)
         self.decoder = DecoderLSTM(embedding_trg, h_dim, num_layers * 2 if bi else num_layers, dropout_p=dropout_p)
@@ -32,6 +33,12 @@ class Seq2seq(nn.Module):
             self.linear2.weight = self.decoder.embedding.weight
 
     def forward(self, src, trg):
+        if use_gpu: src = src.cuda()
+        # Reverse src tensor
+        if self.reverse_input:
+            inv_index = torch.arange(src.size(0)-1, -1, -1).long()
+            if use_gpu: inv_index = inv_index.cuda()
+            src = src.index_select(0, inv_index)
         # Encode
         out_e, final_e = self.encoder(src)
         # Decode
@@ -59,9 +66,14 @@ class Seq2seq(nn.Module):
 
     def beam_search(self, src, beam_size, max_len, remove_tokens=[]):
         '''Returns top beam_size sentences using beam search. Works only when src has batch size 1.'''
+        if use_gpu: src = src.cuda()
+        # Reverse src tensor
+        if self.reverse_input:
+            inv_index = torch.arange(src.size(0)-1, -1, -1).long()
+            if use_gpu: inv_index = inv_index.cuda()
+            src = src.index_select(0, inv_index)
         # Encode
-        source = src.cuda() if use_gpu else batch.src
-        outputs_e, states = self.encoder(source) # batch size = 1
+        outputs_e, states = self.encoder(src) # batch size = 1
         # Start with '<s>'
         init_lprob = -1e10
         init_sent = [self.bos_token]
@@ -79,7 +91,7 @@ class Seq2seq(nn.Module):
                     # Decode
                     outputs_d, new_state = self.decoder(last_word_input, current_state)
                     # Attend
-                    context = self.attention(source, outputs_e, outputs_d)
+                    context = self.attention(src, outputs_e, outputs_d)
                     out_cat = torch.cat((outputs_d, context), dim=2)
                     x = self.linear1(out_cat)
                     x = self.dropout(self.tanh(x))

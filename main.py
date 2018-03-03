@@ -15,18 +15,19 @@ parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learnin
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state, default: 300')
 parser.add_argument('--emb', default=300, type=int, metavar='N', help='embedding size, default: 300')
 parser.add_argument('--nlayers', default=2, type=int, metavar='N', help='number of layers in rnn, default: 2')
-parser.add_argument('--dp', default=0.0, type=float, metavar='N', help='dropout probability, default: 0.0')
+parser.add_argument('--dp', default=0.30, type=float, metavar='N', help='dropout probability, default: 0.30')
 parser.add_argument('--unidir', dest='bi', action='store_false', help='use unidirectional encoder, default: bidirectional')
-parser.add_argument('--attn', default='dot-product', type=str, metavar='STR', help='attention type: dot-product or additive, default: dot-product ')
+parser.add_argument('--attn', default='dot-product', type=str, metavar='STR', help='attention: dot-product, additive or none, default: dot-product ')
+parser.add_argument('--reverse_input', dest='reverse_input', action='store_true', help='reverse input to encoder, default: False')
 parser.add_argument('-v', default=0, type=int, metavar='N', help='vocab size, use 0 for maximum size, default: 0')
 parser.add_argument('-b', default=64, type=int, metavar='N', help='batch size, default: 64')
-parser.add_argument('--epochs', default=50, type=int, metavar='N', help='number of epochs, default: 15')
+parser.add_argument('--epochs', default=50, type=int, metavar='N', help='number of epochs, default: 50')
 parser.add_argument('--model', metavar='DIR', default=None, help='path to model, default: None')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model, default: False')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions, default: None')
 parser.add_argument('--predict_outfile', metavar='DIR', default='data/preds.txt', help='file to output final predictions, default: "data/preds.txt"')
 parser.add_argument('--predict_from_input', metavar='STR', default=None, help='German sentence to translate')
-parser.set_defaults(evaluate=False, bi=True)
+parser.set_defaults(evaluate=False, bi=True, reverse_input=False)
 
 def main():
     global args
@@ -52,7 +53,7 @@ def main():
 
     # Create model 
     tokens = [TRG.vocab.stoi[x] for x in ['<s>', '</s>', '<pad>', '<unk>']]
-    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, args.attn, tokens_bos_eos_pad_unk=tokens)
+    model = Seq2seq(embedding_src, embedding_trg, args.hs, args.nlayers, args.dp, args.bi, args.attn, tokens_bos_eos_pad_unk=tokens, reverse_input=args.reverse_input)
 
     # Load pretrained model 
     if args.model is not None and os.path.isfile(args.model):
@@ -68,8 +69,8 @@ def main():
     # Create loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=weight) 
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr) 
-    #scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=30, factor=0.25, verbose=True, cooldown=6)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,13,16,19], gamma=0.5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'max', patience=30, factor=0.25, verbose=True, cooldown=6)
+    # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,13,16,19], gamma=0.5)
   
     # Create directory for logs, create logger, log hyperparameters
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))

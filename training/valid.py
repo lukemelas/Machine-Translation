@@ -16,6 +16,7 @@ def validate(val_iter, model, criterion, SRC, TRG, logger):
     sents_out = [] # list of sentences from decoder
     sents_ref = [] # list of target sentences 
     for i, batch in enumerate(val_iter):
+        # Use GPU
         src = batch.src.cuda() if use_gpu else batch.src
         trg = batch.trg.cuda() if use_gpu else batch.trg
         # Get model prediction (from beam search)
@@ -42,6 +43,9 @@ def validate_losses(val_iter, model, criterion, logger):
     for i, batch in enumerate(val_iter): 
         src = batch.src.cuda() if use_gpu else batch.src
         trg = batch.trg.cuda() if use_gpu else batch.trg
+        # Reverse src tensor
+        inv_index = torch.arange(src.size(0)-1, -1, -1).long()
+        src = src.index_select(0, inv_index)
         # Forward 
         scores = model(src, trg)
         scores = scores[:-1]

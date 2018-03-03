@@ -7,21 +7,24 @@ class Attention(nn.Module):
     def __init__(self, pad_token=1, bidirectional=True, attn_type='dot-product', h_dim=300):
         super(Attention, self).__init__()
         # Check attn type and store variables
-        if attn_type != 'dot-product' and attn_type != 'additive':
+        if attn_type not in ['dot-product', 'additive', 'none']:
             raise Exception('Incorrect attention type')
         self.bidirectional = bidirectional
         self.attn_type = attn_type
         self.h_dim = h_dim
         self.pad_token = pad_token
 
-        # Create parameters depending on attention type
+        # Create parameters for additive attention 
         if self.attn_type == 'additive':
             self.linear = nn.Linear(2 * self.h_dim, self.h_dim)
             self.tanh = nn.Tanh()
             self.vector = nn.Parameter(torch.zeros(self.h_dim))
-        self.softmax = nn.Softmax()
 
     def forward(self, in_e, out_e, out_d):
+
+        # If no attention, return context of zeros
+        if self.attn_type == 'none':
+            return out_d.clone() * 0
 
         # Deal with bidirectional encoder, move batches first
         if self.bidirectional: # sum hidden states for both directions
@@ -40,10 +43,10 @@ class Attention(nn.Module):
             attn = self.linear(torch.cat((out_e_resized, out_d_resized), dim=3)) # --> b x sl x tl x hd
             attn = self.tanh(attn) @ self.vector # --> b x sl x tl
 
-        # Apply attn to encoder outputs
+        # Combine attn dist with encoder outputs
         attn = attn.exp() / attn.exp().sum(dim=1, keepdim=True) # in updated pytorch, make softmax
         attn = attn.transpose(1,2) # --> b x tl x sl
-        context = attn.bmm(out_e) # --> b x lt x hd
-        context = context.transpose(0,1) # --> lt x b x hd
+        context = attn.bmm(out_e) # --> b x tl x hd
+        context = context.transpose(0,1) # --> tl x b x hd
         return context
 

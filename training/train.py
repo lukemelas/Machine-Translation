@@ -36,6 +36,7 @@ def train(train_iter, val_iter, model, criterion, optimizer, scheduler, SRC, TRG
         model.train()
         losses = AverageMeter()
         for i, batch in enumerate(train_iter): 
+            # Use GPU
             src = batch.src.cuda() if use_gpu else batch.src
             trg = batch.trg.cuda() if use_gpu else batch.trg
             
