@@ -1,5 +1,5 @@
 import os
-os.environ['QT_QPA_PLATFORM']='offscreen'
+os.environ['QT_QPA_PLATFORM']='offscreen' # for Azure
 import pickle
 import numpy
 import matplotlib.pyplot as plt
@@ -63,9 +63,6 @@ def display_visual(src_list, trg_list, attn_dist, file_ext=''):
     ax.set_yticklabels([''] + trg_list) # axes
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1)) # labels
     ax.yaxis.set_major_locator(ticker.MultipleLocator(1)) # labels 
-    plt.savefig('scripts/visualizations/attn' + file_ext + '.jpg')
+    plt.savefig('visualize/visualizations/attn' + file_ext + '.jpg')
     #plt.show()
 
-if __name__ == '__main__':
-    src_list, trg_list, attn_dist = pickle.load(open('testdata.pkl', 'rb'))
-    display_visual(src_list, trg_list, attn_dist)
