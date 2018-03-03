@@ -5,7 +5,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torchtext
 
-from training import train, valid, predict, visualize
+from training import train, valid, predict
+from visualize import visualize
 from utils.utils import Logger, AverageMeter
 from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
