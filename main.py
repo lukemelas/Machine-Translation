@@ -1,11 +1,11 @@
-import argparse, os, datetime, time
+import argparse, os, datetime, time, sys
 
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torchtext
 
-from training import train, valid, predict
+from training import train, valid, predict, visualize
 from utils.utils import Logger, AverageMeter
 from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
@@ -24,10 +24,11 @@ parser.add_argument('-b', default=64, type=int, metavar='N', help='batch size, d
 parser.add_argument('--epochs', default=50, type=int, metavar='N', help='number of epochs, default: 50')
 parser.add_argument('--model', metavar='DIR', default=None, help='path to model, default: None')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='only evaluate model, default: False')
+parser.add_argument('--visualize', dest='visualize', action='store_true', help='visualize model attention distribution')
 parser.add_argument('--predict', metavar='DIR', default=None, help='directory with final input data for predictions, default: None')
 parser.add_argument('--predict_outfile', metavar='DIR', default='data/preds.txt', help='file to output final predictions, default: "data/preds.txt"')
 parser.add_argument('--predict_from_input', metavar='STR', default=None, help='German sentence to translate')
-parser.set_defaults(evaluate=False, bi=True, reverse_input=False)
+parser.set_defaults(evaluate=False, bi=True, reverse_input=False, visualize=False)
 
 def main():
     global args
@@ -76,6 +77,7 @@ def main():
     path = os.path.join('saves', datetime.datetime.now().strftime("%m-%d-%H-%M-%S"))
     os.makedirs(path, exist_ok=True)
     logger = Logger(path)
+    logger.log('COMMAND ' + ' '.join(sys.argv), stdout=False)
     logger.log('ARGS: {}\nOPTIMIZER: {}\nLEARNING RATE: {}\nSCHEDULER: {}\nMODEL: {}\n'.format(args, optimizer, args.lr, vars(scheduler), model), stdout=False)
     
     # Train, validate, or predict
@@ -84,6 +86,8 @@ def main():
         predict.predict_from_input(model, args.predict_from_input, SRC, TRG, logger)
     elif args.predict is not None:
         predict.predict(model, args.predict, args.predict_outfile, SRC, TRG, logger)
+    elif args.visualize:
+        visualize.visualize(train_iter, model, SRC, TRG, logger)
     elif args.evaluate:
         valid.validate(val_iter, model, criterion, SRC, TRG, logger)
     else:
@@ -92,4 +96,5 @@ def main():
     return
 
 if __name__ == '__main__':
+    print(' '.join(sys.argv))
     main()

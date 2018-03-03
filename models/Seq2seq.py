@@ -111,3 +111,25 @@ class Seq2seq(nn.Module):
         best_options.sort(key = lambda x: x[0], reverse=True)
         return best_options
 
+    def get_attn_dist(self, src, trg):
+        '''Runs forward pass, also returns attention distribution'''
+        if use_gpu: src = src.cuda()
+        # Reverse src tensor
+        if self.reverse_input:
+            inv_index = torch.arange(src.size(0)-1, -1, -1).long()
+            if use_gpu: inv_index = inv_index.cuda()
+            src = src.index_select(0, inv_index)
+        # Encode, Decode, Attend
+        out_e, final_e = self.encoder(src)
+        out_d, final_d = self.decoder(trg, final_e)
+        context = self.attention(src, out_e, out_d)
+        out_cat = torch.cat((out_d, context), dim=2) 
+        # Predict 
+        x = self.linear1(out_cat)
+        x = self.dropout(self.tanh(x))
+        x = self.linear2(x)
+        # Visualize attention distribution
+        attn_dist = self.attention.get_visualization(src, out_e, out_d)
+        return x, attn_dist
+
+

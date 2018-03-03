@@ -20,7 +20,8 @@ class Attention(nn.Module):
             self.tanh = nn.Tanh()
             self.vector = nn.Parameter(torch.zeros(self.h_dim))
 
-    def forward(self, in_e, out_e, out_d):
+    def attention(self, in_e, out_e, out_d):
+        '''Produces context and attention distribution'''
 
         # If no attention, return context of zeros
         if self.attn_type == 'none':
@@ -43,10 +44,25 @@ class Attention(nn.Module):
             attn = self.linear(torch.cat((out_e_resized, out_d_resized), dim=3)) # --> b x sl x tl x hd
             attn = self.tanh(attn) @ self.vector # --> b x sl x tl
 
-        # Combine attn dist with encoder outputs
+        # Softmax and reshape
         attn = attn.exp() / attn.exp().sum(dim=1, keepdim=True) # in updated pytorch, make softmax
         attn = attn.transpose(1,2) # --> b x tl x sl
+
+        # Get attention distribution
         context = attn.bmm(out_e) # --> b x tl x hd
         context = context.transpose(0,1) # --> tl x b x hd
+
+        return context, attn
+
+    def forward(self, in_e, out_e, out_d):
+        '''Produces context using attention distribution'''
+        context, attn = self.attention(in_e, out_e, out_d)
         return context
+
+    def get_visualization(self, in_e, out_e, out_d):
+        '''Gives attention distribution for visualization'''        
+        context, attn = self.attention(in_e, out_e, out_d)
+        return attn
+        
+        
 

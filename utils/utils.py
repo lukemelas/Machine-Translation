@@ -26,7 +26,6 @@ class Logger():
         #with open(os.path.join(self.path, 'model.pkl'), 'w') as f:
         torch.save(model_dict, os.path.join(self.path, 'model.pkl'))
 
-
 class AverageMeter():
     '''Computes and stores the average and current value. 
        Taken from the PyTorch ImageNet tutorial'''
