@@ -11,7 +11,7 @@ from utils.utils import Logger, AverageMeter
 from utils.preprocess import preprocess, load_embeddings
 from models.Seq2seq import Seq2seq
 
-parser = argparse.ArgumentParser(description='Language Model')
+parser = argparse.ArgumentParser(description='Machine Translation with Attention')
 parser.add_argument('--lr', default=2e-3, type=float, metavar='N', help='learning rate, default: 2e-3')
 parser.add_argument('--hs', default=300, type=int, metavar='N', help='size of hidden state, default: 300')
 parser.add_argument('--emb', default=300, type=int, metavar='N', help='embedding size, default: 300')

@@ -2,38 +2,43 @@
 
 This repository contains an implementation of a Seq2seq neural network model for machine translation. More details on sequence to sequence machine translation and hyperparameter tuning may be found in [Massive Exploration of Neural Machine Translation Architectures](https://arxiv.org/abs/1703.03906).
 
-This repository is a work in progress. 
-
-<!--
 To train our model, clone the repo and run `main.py`:
 ```
-usage: main.py [-h] [--model DIR] [--lr N] [--hs N] [--nlayers N] [--no-wt]
-               [--maxnorm N] [--dropout N] [-v N] [--data DATA] [-b N]                                                                       [--bptt N] [--epochs N] [--bigram] [-e] [-p] [--sample SAMPLE]
-                                                                                                                              Language Model                                                                                                                
+usage: main.py [-h] [--lr N] [--hs N] [--emb N] [--nlayers N] [--dp N]
+               [--unidir] [--attn STR] [--reverse_input] [-v N] [-b N]
+               [--epochs N] [--model DIR] [-e] [--visualize] [--predict DIR]
+               [--predict_outfile DIR] [--predict_from_input STR]
+
+Machine Translation with Attention
+
 optional arguments:
-  -h, --help       show this help message and exit
-  --model DIR      path to model
-  --lr N           learning rate
-  --hs N           size of hidden state                                                                                         --nlayers N      number of layers in rnn                                                                                      --no-wt          disable weight tying in network
-  --maxnorm N      maximum gradient norm for clipping
-  --dropout N      dropout probability
-  -v N             vocab size
-  --data DATA      path to data
-  -b N             batch size
-  --bptt N         backprop though time length (sequence length)
-  --epochs N       number of epochs
-  --ngram          use ngram language model
-  -e, --evaluate   run model only on validation set
-  -p, --predict    save predictions on final input data
-  --sample SAMPLE  number of sentences to sample
+  -h, --help            show this help message and exit
+  --lr N                learning rate, default: 2e-3
+  --hs N                size of hidden state, default: 300
+  --emb N               embedding size, default: 300
+  --nlayers N           number of layers in rnn, default: 2
+  --dp N                dropout probability, default: 0.30
+  --unidir              use unidirectional encoder, default: bidirectional
+  --attn STR            attention: dot-product, additive or none, default:
+                        dot-product
+  --reverse_input       reverse input to encoder, default: False
+  -v N                  vocab size, use 0 for maximum size, default: 0
+  -b N                  batch size, default: 64
+  --epochs N            number of epochs, default: 50
+  --model DIR           path to model, default: None
+  -e, --evaluate        only evaluate model, default: False
+  --visualize           visualize model attention distribution
+  --predict DIR         directory with final input data for predictions,
+                        default: None
 ```
 
-For example, we found the following hyperparameters worked well:
+For example, to train with the default parameters, run:
 
-``` python main.py -b 128 --bptt 64 --epochs 20 --nlayers 2 ```
--->
+``` python main.py ```
 
-<!-- cp .data/iwslt/de-en/train.de-en-full.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-full.de .data/iwslt/de-en/train.de-en.de -->
-<!-- cp .data/iwslt/de-en/train.de-en-small.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-small.de .data/iwslt/de-en/train.de-en.de -->
+Note: To generate smaller or larger versions of the training dataset for experimenting with the model, you may use the following commands.
+ - cp .data/iwslt/de-en/train.de-en-full.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-full.de .data/iwslt/de-en/train.de-en.de
+ - cp .data/iwslt/de-en/train.de-en-small.en .data/iwslt/de-en/train.de-en.en && cp .data/iwslt/de-en/train.de-en-small.de .data/iwslt/de-en/train.de-en.de
+
 
 
