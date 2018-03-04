@@ -25,7 +25,7 @@ class Attention(nn.Module):
 
         # If no attention, return context of zeros
         if self.attn_type == 'none':
-            return out_d.clone() * 0
+            return out_d.clone() * 0, out_d.clone() * 0
 
         # Deal with bidirectional encoder, move batches first
         if self.bidirectional: # sum hidden states for both directions
