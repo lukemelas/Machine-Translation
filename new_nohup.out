@@ -1,0 +1,485 @@
+Loaded data. |TRG| = 11560. Time: 200.97.
+Loaded embedding vectors from np files
+Weight tying!
+Weight tying!
+Weight tying!
+German: ['Als', 'ich', 'in', 'meinen', '20ern', 'war', ',', 'hatte', 'ich', 'meine', 'erste', 'Psychotherapie-Patientin', '.']
+English: 1,When|I|was And|when|I As|I|was So|when|I Now|<comma>|when And|as|I and|when|I So|<comma>|when But|
+
+German: ['Und', 'ich', 'bekam', 'eine', 'Frau', 'in', 'den', '20ern', ',', 'die', 'über', 'Jungs', 'reden', 'wollte', '.']
+English: 6,And|I|got And|I|had And|I|was And|I|came And|I|did And|then|I I|got|a And|I|received And|I|went An
+
+German: ['Aber', 'bald', 'drängte', 'mich', 'mein', 'Betreuer', ',', 'Alex', "'", 'Liebesleben', 'in', 'Frage', 'zu', 'stellen', '.']
+English: 11,But|soon|<comma> But|initially|<comma> But|soon|I But|quickly|<comma> But|as|soon But|finally|<co
+
+German: ['Das', 'war', 'der', 'Moment', ',', 'in', 'dem', 'mir', 'bewusst', 'wurde', ',', 'dass', '30', 'nicht', 'die', 'neuen', '20', 'sind', '.']
+English: 16,That|was|the That|'s|the This|was|the It|was|the And|that|was This|is|the And|that|'s So|that|was
+
+German: ['Oh', ',', 'yeah', '!', 'Ihr', 'seid', 'alle', 'unglaublich', '.']
+English: 21,Oh|<comma>|yeah Oh|yeah|<comma> Oh|yeah|! Ah|<comma>|yeah Oh|yeah|. Oh|!|Oh Oh|<comma>|oh Uh|<com
+
+German: ['In', 'den', '20ern', 'sollte', 'man', 'sich', 'also', 'weiterbilden', 'über', 'den', 'Körper', 'und', 'die', 'eigenen', 'Möglichkeiten', '.']
+English: 26,So|in|the So|in|front So|<comma>|in So|you|should So|you|have And|in|the So|if|you And|so|in So|<
+
+German: ['Als', 'Kultur', 'haben', 'wir', 'das', 'trivialisiert', ',', 'was', 'jetzt', 'das', 'entscheidende', 'Jahrzehnt', 'für', 'das', 'Erwachsenwerden', 'ist', '.']
+English: 31,Now|<comma>|as When|we|have As|a|culture As|culture|as As|an|culture As|culture|we So|as|a And|as
+
+German: ['Ich', 'hatte', 'einen', 'besseren', 'Lebenslauf', ',', 'als', 'ich', 'gerade', 'die', 'Uni', 'abgeschlossen', 'hatte', '.', '"']
+English: 36,I|had|a I|had|one I|'d|have I|had|got I|'ve|had I|have|a I|had|an I|had|had I|got|a I|had|gotten 
+
+German: ['Die', 'Post-Milleniums-Midlife-Krise', 'bedeutet', 'nicht', ',', 'sich', 'einen', 'roten', 'Sportwagen', 'zu', 'kaufen', '.']
+English: 41,The|gap|does The|default|room The|bee|does The|default|system The|inclusion|system The|default|th
+
+German: ['Und', 'obwohl', 'ihre', '20er', 'hart', 'waren', ',', 'waren', 'ihre', 'Jahre', 'davor', 'noch', 'viel', 'schlimmer', '.']
+English: 46,And|although|their And|even|though And|while|their And|when|their And|even|their And|although|the
+
+German: ['Erstens', ',', 'erzählte', 'ich', 'Emma', ',', 'sie', 'hätte', 'keine', 'Identitätskrise', ',', 'sie', 'solle', 'sich', 'vielmehr', 'ein', 'Identitätskapital', 'aneignen']
+English: 51,First|<comma>|I One|<comma>|I First|of|all One|is|<comma> One|was|<comma> One|is|I First|<comma>|
+
+German: ['Dieses', 'neue', 'Etwas', ',', 'diese', 'neue', 'Person', 'zum', 'Verabreden', 'kommt', 'meistens', 'von', 'außerhalb', 'des', 'eigenen', 'Umfelds', '.']
+English: 56,This|new|thing And|this|new This|new|piece So|this|new Now|<comma>|this That|new|thing Now|this|n
+
+German: ['Ich', 'sagte', 'ihr', ',', 'die', 'Zeit', ',', 'eine', 'neue', 'Familie', 'auszusuchen', ',', 'wäre', 'jetzt', '.']
+English: 61,I|told|her I|said|<comma> I|said|that I|said|her And|I|told I|said|to I|was|telling And|I|said I|
+
+German: ['Sie', 'hat', 'einen', 'Mann', 'geheiratet', ',', 'den', 'sie', 'bewusst', 'gewählt', 'hat', '.']
+English: 66,She|married|a She|married|one She|'s|married She|was|married She|has|married She|got|married She|
+
+German: ['Definiert', 'euch', 'nicht', 'darüber', ',', 'was', 'ihr', 'nicht', 'wisst', ',', 'oder', 'nicht', 'gemacht', 'habt', '.']
+English: 71,Do|n't|worry Do|n't|tell Do|n't|underestimate Do|n't|think Do|n't|know Do|n't|ask Do|n't|care Do|
+
+German: ['Designer', 'können', 'ihre', 'Ideen', 'so', 'direkt', 'in', '3D', 'materialisieren', 'und', 'Chirurgen', 'können', 'an', 'virtuellen', 'Organen', 'unter', 'dem', 'Bildschirm', 'üben', '.']
+English: 76,Designers|can|practice Designers|can|use Designers|can|make Designers|can|create Designers|can|do
+
+German: ['In', 'diesen', 'beiden', 'Beispielen', 'greifen', 'wir', 'also', 'in', 'die', 'digitale', 'Welt', '.']
+English: 81,So|in|these So|<comma>|in So|in|those So|these|two And|so|in So|we|'re In|these|two So|this|two A
+
+German: ['Wie', 'würde', 'eine', 'solche', 'Zukunft', 'aussehen', '?']
+English: 86,What|would|such How|would|such How|would|a What|would|one So|how|would So|what|would What|would|a
+
+German: ['Aber', 'mein', 'Traum', 'war', 'es', ',', 'eine', 'chinesische', 'Opernsängerin', 'zu', 'werden', '.']
+English: 91,But|my|dream And|my|dream However|<comma>|my but|my|dream But|I|was Now|my|dream But|the|dream My
+
+German: ['Nur', 'meine', 'Freunde', 'unterstützten', 'mich', ',', 'aber', 'sie', 'waren', 'auch', 'nur', 'Kinder', ',', 'genauso', 'machtlos', 'wie', 'ich', 'selbst', '.']
+English: 96,Only|my|friends Just|my|friends Simply|my|friends only|my|friends just|my|friends Even|my|friends
+
+German: ['Keiner', 'da', ',', 'um', 'mich', 'etwas', 'zu', 'lehren', '?', 'Auch', 'gut', '.']
+English: 101,No|one|to No|one|'s No|one|there No|one|is None|there|for No|one|in No|one|else No|one|for None|
+
+German: ['Die', 'Bibel', 'ist', 'interessant', ',', 'aber', 'seltsam', '.']
+English: 106,The|Bible|is The|Bible|'s It|'s|interesting And|the|Bible the|Bible|is So|the|Bible This|Bible|i
+
+German: ['Es', 'kam', 'mir', 'nie', 'in', 'den', 'Sinn', ',', 'dass', 'China', 'gar', 'nicht', 'im', 'Zentrum', 'der', 'Welt', 'sein', 'muss', '.']
+English: 111,It|never|came It|never|occurred It|never|reminded It|never|really I|never|came I|never|realized 
+
+German: ['Vergleich', 'und', 'Gegenüberstellung', 'ermöglichen', 'ein', 'komplexeres', 'Verständnis', 'eines', 'Themas', '.']
+English: 116,And|parallel|and In|comparison|<comma> and|parallel|and And|compared|and And|comparison|and and|
+
+German: ['Ich', 'weiß', ',', 'dass', 'ich', 'mich', 'nie', 'mehr', 'einsam', 'oder', 'machtlos', 'fühlen', 'werde', '.']
+English: 121,I|know|that I|know|I I|know|<comma> And|I|know I|know|you I|know|it I|know|we So|I|know Now|I|kn
+
+German: ['Vielen', 'Dank', '.']
+English: 126,Thank|you|. Thank|you|very Thanks|very|much Thank|you|so Thanks|a|lot So|thank|you So|<comma>|th
+
+German: ['Alle', 'Einser', '.']
+English: 131,All|hail|. All|of|a All|right|. All|the|rest All|security|dominated All|security|. All|the|time 
+
+German: ['Ich', 'fühlte', 'mich', 'richtig', 'gut', '.']
+English: 136,I|felt|good I|felt|really I|felt|pretty I|felt|okay And|I|felt I|felt|just I|feel|good I|was|rea
+
+German: ['Sie', 'ist', 'so', 'geheimnisvoll', ',', 'so', 'tiefgreifend', '.']
+English: 141,It|'s|so It|is|so She|'s|so And|it|'s It|'s|such She|is|so It|'s|kind This|is|so So|it|'s It|is|
+
+German: ['Kein', 'eifersüchtiger', 'König', ',', 'keine', '"', 'Abenteuer', 'aus', '1001', 'Nacht', '"', '.']
+English: 146,No|king|king No|king|of No|<quote>|the No|ancient|king No|American|king No|seven|- No|longer|Kin
+
+German: ['Wir', 'vergessen', ',', 'wie', 'rau', 'seine', 'Vision', 'war', '.']
+English: 151,We|remember|how We|forget|how We|forgot|how And|we|forget We|know|how We|'ve|forgotten And|we|re
+
+German: ['Eifersucht', 'macht', 'uns', 'alle', 'zu', 'Amateur-Romanautoren', ',', 'und', 'damit', 'kannte', 'Proust', 'sich', 'aus', '.']
+English: 156,And|jealousy|makes The|jealousy|makes And|jealousy|make jealousy|makes|us So|jealousy|makes And|
+
+German: ['Was', 'mag', 'die', 'Eifersucht', '?']
+English: 161,What|does|the What|do|the What|would|the What|kind|of What|might|the So|what|does What|'s|the Wh
+
+German: ['Deshalb', 'ist', 'Instagram', 'auch', 'so', 'erfolgreich', '.']
+English: 166,That|'s|why And|so|it And|so|of So|it|'s And|that|'s And|so|KIPP So|KIPP|is And|so|that This|is|
+
+German: ['Gibt', 'es', 'ein', 'anderes', 'Gefühl', ',', 'das', 'uns', 'auf', 'diese', 'besondere', 'Weise', 'öffnet', '?']
+English: 171,Is|there|another Is|there|a Are|there|a Is|there|any Does|there|be Are|there|another Is|there|so
+
+German: ['Die', 'arme', 'Kreatur', 'steht', 'grundlos', 'unter', 'Verdacht', '.']
+English: 176,The|poor|creature This|poor|creature That|poor|creature The|rural|creature And|the|poor The|bad|
+
+German: ['Denn', 'je', 'eifersüchtiger', 'wir', 'sind', ',', 'desto', 'mehr', 'zieht', 'es', 'uns', 'zu', 'Fantasien', 'hin', '.']
+English: 181,Because|the|more Because|at|the Because|ever|we Because|once|we Because|that|'s Because|every|on
+
+German: ['Das', 'ist', 'etwas', 'aus', 'einem', 'Roman', '.']
+English: 186,This|is|something It|'s|something That|'s|something This|is|a So|this|is And|this|is This|is|som
+
+German: ['Das', 'ist', 'eine', 'Methode', '.']
+English: 191,That|'s|a This|is|a That|'s|one So|this|is It|'s|a And|this|is And|that|'s So|that|'s That|is|a 
+
+German: ['Gehen', 'wir', 'zur', '221B', 'Baker', 'Street', 'und', 'fragen', 'nach', 'Sherlock', 'Holmes', '.']
+English: 196,Let|'s|go So|let|'s Go|to|the Let|'s|take Let|me|go Going|to|the Let|'s|turn Let|'s|move Let|'s|
+
+German: ['Und', 'im', 'nächsten', 'Moment', 'liegen', 'sie', 'auf', 'einer', 'Wellenlänge', '.']
+English: 201,And|the|next And|at|the And|in|the And|on|the And|next|moment And|that|next And|over|the And|ins
+
+German: ['Aber', 'ich', 'mag', 'Notfallpläne', '.']
+English: 206,But|I|like But|I|do But|I|think But|I|love But|I|'m But|I|'ll But|I|would But|I|want But|I|might
+
+German: ['Vielen', 'Dank', '.']
+English: 211,Thank|you|. Thank|you|very Thanks|very|much Thank|you|so Thanks|a|lot So|thank|you So|<comma>|th
+
+German: ['Die', 'Frage', 'blieb', 'mir', 'und', 'ich', 'verallgemeinerte', 'sie', ':']
+English: 216,And|the|question The|question|stayed And|so|the The|question|was And|I|stayed The|question|kept 
+
+German: ['Wie', 'ist', 'es', ',', 'eine', 'Uniform', 'zu', 'tragen', 'und', 'diese', 'Bürde', 'zu', 'tragen', '?']
+English: 221,How|is|it What|is|it What|is|to So|how|is What|'s|it How|'s|it So|what|about So|what|is What|'s|
+
+German: ['Und', 'ich', 'bediente', 'die', 'mechanischen', 'Besen', 'und', 'pflügte', 'den', 'Schnee', '.']
+English: 226,And|I|swallowed And|I|shut And|I|'m And|I|washed And|I|cut And|I|would And|I|put And|I|'d And|I|
+
+German: ['Man', 'ist', 'den', 'ganzen', 'Tag', 'im', 'Verkehr', ',', 'alles', 'saust', 'vorbei', '.']
+English: 231,You|'re|all You|'ve|got You|are|all You|have|all You|'ve|been It|'s|all You|know|<comma> You|'ve
+
+German: ['Er', 'ist', 'auch', 'wie', 'eine', 'Art', 'der', 'Atmung', 'oder', 'Zirkulation', '.']
+English: 236,It|'s|also He|'s|also It|is|also And|it|'s It|also|is It|'s|kind He|is|also It|'s|like It|'s|as 
+
+German: ['Die', 'Wirtschaft', 'braucht', 'sie', '.']
+English: 241,The|economy|needs The|economies|need The|economy|takes The|economy|requires The|economies|needs 
+
+German: ['Sie', 'sehen', 'die', 'Straßen', 'jeden', 'Tag', ',', 'regelmäßig', '.']
+English: 246,You|see|the They|see|the And|you|see You|can|see They|'re|seeing and|you|see So|you|see They|'re
+
+German: ['"', 'Alles', 'wird', 'gut', '.', '"']
+English: 251,<quote>|Everything|gets <quote>|Everything|is <quote>|Everything|'s <quote>|Everything|will <quo
+
+German: ['Nehmen', 'Sie', 'sich', 'einen', 'Moment', ',', 'sich', 'zu', 'bedanken', '.']
+English: 256,Take|a|moment Just|take|a Imagine|a|moment Wait|for|a Let|'s|take Consider|a|moment So|take|a Ta
+
+German: ['Er', 'schnitt', 'meine', 'Mutter', 'sechs', 'Mal', 'in', 'sechs', 'verschiedene', 'Richtungen', 'und', 'schnürte', 'mir', 'armen', 'Kleinen', 'dabei', 'die', 'Luft', 'ab', '.']
+English: 261,He|took|my He|cut|my And|he|took And|he|cut He|did|my It|took|my He|ate|my He|used|my He|got|my 
+
+German: ['Man', 'bekommt', 'sie', 'nur', 'durch', 'Unfälle', ',', 'wie', 'der', ',', 'der', 'am', 'Tag', 'meiner', 'Geburt', 'geschah', '.']
+English: 266,You|'ll|only You|only|get You|can|only You|just|get You|'re|just You|'ll|just You|get|them You|c
+
+German: ['Wenn', 'es', 'eine', 'Olympiade', 'der', 'Unterdrückung', 'gäbe', ',', 'bekäme', 'ich', 'eine', 'Goldmedaille', '.']
+English: 271,If|there|were When|there|were If|there|was If|there|would When|there|was And|if|there If|there|'
+
+German: ['Wenn', 'also', 'meine', 'drei', 'älteren', 'Schwestern', 'wischten', ',', 'wischte', 'ich', 'mit', '.']
+English: 276,So|if|I So|when|I So|<comma>|if So|when|my So|<comma>|as So|<comma>|in So|<comma>|when So|if|my 
+
+German: ['Sie', 'waren', 'aber', 'durchaus', 'besorgt', ',', 'dass', 'ich', 'zu', 'Ramadan', 'vielleicht', 'verhungern', 'könnte', '.']
+English: 281,But|they|were Now|<comma>|they But|<comma>|they And|they|were but|they|were But|I|was But|they|h
+
+German: ['Und', 'wenn', 'meine', 'Freunde', 'ihre', 'Sommerferien', 'an', 'der', 'Küste', 'von', 'Jersey', 'verbrachten', ',', 'dann', 'ich', 'nicht', '.']
+English: 286,And|when|my And|if|my And|then|my And|my|friends And|as|my And|when|I And|I|was When|my|friends 
+
+German: ['Jedes', 'Mal', ',', 'wenn', 'ich', 'eine', 'Szene', 'aus', '"', 'Die', 'Glasmenagerie', '"', 'spielte', ',', 'schluchzten', 'meine', 'Lehrer', '.']
+English: 291,Every|time|I Each|time|I And|every|time So|every|time Every|once|I every|time|I Every|time|<comm
+
+German: ['Ich', 'habe', 'Zerebralparese', '!']
+English: 296,I|have|Yay I|have|toys I|have|a I|have|superstar I|have|de I|have|hair I|'ve|been I|'ve|got I|ha
+
+German: ['Die', 'Uni', 'imitierte', 'das', 'Leben', '.']
+English: 301,The|college|is And|in|college The|college|was The|university|was The|university|is The|education
+
+German: ['Also', 'wurde', 'ich', 'Komikerin', '.']
+English: 306,So|I|became So|I|was And|so|I So|I|turned So|I|got So|<comma>|I So|I|went So|I|become So|I|start
+
+German: ['Und', 'sie', 'schaute', 'mich', 'an', 'und', 'sagte', ':', '"', 'Fünf', ',', 'vier', ',', 'drei', ',', 'zwei', '...', '"']
+English: 311,And|she|looked And|she|was She|looked|at And|it|looked And|I|looked And|she|came And|she|watched
+
+German: ['Hat', 'sie', 'ne', 'Krankheit', '?']
+English: 316,Did|it|have Does|it|have Does|she|have Has|she|got Did|she|have Is|it|an Has|it|got Does|they|ha
+
+German: ['Die', 'Behinderten', 'sind', 'die', 'größten', '--', 'Ja', '.', 'Das', 'ist', 'einen', 'Applaus', 'wert', '.', 'Los', '.']
+English: 321,The|seats|are The|monkeys|are The|main|ones The|Pharaoh|are The|musicians|are The|Koreans|are Th
+
+German: ['Vielleicht', 'gäbe', 'es', 'weniger', 'Hass', 'im', 'Internet', ',', 'wenn', 'es', 'mehr', 'positive', 'Vorbilder', 'gäbe', '.']
+English: 326,Maybe|there|would Maybe|there|were Perhaps|there|would Maybe|there|was Maybe|there|’d Maybe|ther
+
+German: ['Ich', 'bin', 'als', 'Hauptfigur', 'mit', 'der', 'Comedy-Tour', '"', 'Arabs', 'Gone', 'Wild', '"', 'um', 'die', 'Welt', 'gereist', '.']
+English: 331,I|was|as I|'m|as I|'ve|been I|'m|a I|'m|an I|am|as I|am|a I|was|a I|am|an I|was|an And|I|'m I|'m
+
+German: ['Menschen', 'starben', ',', 'darunter', 'auch', 'die', 'Besatzung', 'der', 'Apollo', '1', '.']
+English: 336,People|died|<comma> People|die|<comma> people|died|<comma> Humans|died|<comma> People|died|; Peo
+
+German: ['Zu', 'jener', 'Zeit', 'war', 'das', 'stärkste', 'Gefühl', 'ein', 'Gefühl', 'des', 'Erstaunens', 'über', 'die', 'übernatürlichen', 'Kräfte', 'von', 'Technologie', '.']
+English: 341,At|that|time At|the|time At|this|time At|those|time For|that|time And|at|that Over|that|time And
+
+German: ['Seit', '1970', 'waren', 'keine', 'menschlichen', 'Wesen', 'mehr', 'auf', 'dem', 'Mond', '.']
+English: 346,Since|1970|<comma> Since|1970|in In|1970|<comma> And|since|1970 For|1970|<comma> By|1970|<comma>
+
+German: ['Sie', 'haben', 'unser', 'Leben', 'verlängert', 'und', 'bereichert', '.']
+English: 351,They|'ve|been They|'ve|practiced They|'ve|swallowed They|'ve|adapted They|'ve|conquered You|'ve|
+
+German: ['Nein', ',', 'die', 'Gründe', ',', 'warum', 'wir', 'keine', 'großen', 'Problem', 'lösen', 'können', ',', 'sind', 'komplizierter', 'und', 'tiefgründiger', '.']
+English: 356,No|<comma>|the No|<comma>|no No|<comma>|why No|<comma>|a No|<comma>|that No|<comma>|reason No|<c
+
+German: ['Ein', 'anderes', 'Mal', 'können', 'wir', 'die', 'großen', 'Probleme', 'nicht', 'lösen', ',', 'weil', 'unsere', 'politischen', 'Systeme', 'scheitern', '.']
+English: 361,Another|time|we Another|time|<comma> And|another|time So|another|time The|other|time We|can|not 
+
+German: ['Letztlich', 'werden', 'großen', 'Problemen', 'manchmal', 'die', 'Lösungen', 'entzogen', ',', 'weil', 'wir', 'das', 'Problem', 'nicht', 'richtig', 'verstehen', '.']
+English: 366,And|ultimately|<comma> In|the|end In|ultimately|<comma> Ultimately|<comma>|big And|eventually|<c
+
+German: ['Am', 'allermeisten', 'jedoch', ',', 'war', 'es', 'am', 'Ende', 'einfach', ',', 'zum', 'Mond', 'zu', 'fliegen', '.']
+English: 371,But|at|the However|<comma>|on However|<comma>|at However|<comma>|in But|in|fact But|on|the Howev
+
+German: ['Vielen', 'Dank', '.']
+English: 376,Thank|you|. Thank|you|very Thanks|very|much Thank|you|so Thanks|a|lot So|thank|you So|<comma>|th
+
+German: ['Du', 'musst', 'dir', 'das', 'wirklich', 'vorstellen', '.']
+English: 381,You|really|have You|'ve|really You|have|to You|really|need You|actually|have You|'ve|got You|rea
+
+German: ['Es', 'winkt', 'dir', 'vom', 'Rücken', 'eines', 'gelb-braunen', 'Pferdes', 'aus', 'zu', '.']
+English: 386,It|belongs|to It|made|you It|'s|made It|covers|you It|took|you It|would|take It|'s|taken It|stru
+
+German: ['Hier', 'stell', 'dir', 'mit', 'der', 'ganzen', 'Leistung', 'deiner', 'Vorstellungskraft', 'Britney', 'Spears', 'vor', '.']
+English: 391,Here|you|see Here|you|can Here|<comma>|with This|shows|you This|is|where This|is|showing Here|'s
+
+German: ['Sie', 'prägten', 'sich', 'nach', 'einmaligem', 'Betrachten', 'Hunderte', 'von', 'zufälligen', 'Zahlen', 'ein', '.']
+English: 396,They|'re|looking They|'re|figuring They|were|moving They|set|out They|were|looking They|went|dow
+
+German: ['Diese', 'Leute', 'müssen', 'übernatürliche', 'Fähigkeiten', 'haben', '.']
+English: 401,These|people|have These|are|people These|guys|have Those|people|have These|people|need These|peo
+
+German: ['Kennst', 'du', 'Britney', 'Spears', '?', '"']
+English: 406,Are|you|crying Do|you|know Do|you|want Do|you|have Are|you|going Are|you|crossing Do|you|feel Do
+
+German: ['Und', 'das', 'war', 'der', 'Anfang', 'einer', 'sehr', 'seltsamen', 'Reise', 'für', 'mich', '.']
+English: 411,And|that|was And|this|was And|it|was And|that|'s And|this|is And|that|became And|so|that And|so|
+
+German: ['Kim', 'Peek', 'kennen', '.']
+English: 416,Ah|-|three Two|-|year Good|-|three Ah|-|five Two|hundred|- A|hundred|- Six|hundred|- Six|-|year 
+
+German: ['Sie', 'haben', 'uns', 'kulturell', 'verändert', 'und', 'ich', 'würde', 'behaupten', ',', 'dass', 'sie', 'uns', 'auch', 'kognitiv', 'verändert', 'haben', '.']
+English: 421,They|'ve|changed They|changed|culturally They|have|changed You|'ve|changed They|changed|us They|
+
+German: ['Sind', 'sie', 'klüger', 'als', 'wir', '?']
+English: 426,Are|they|smarter Are|they|more Are|you|smarter Are|it|smarter Are|it|more Is|they|smarter Are|we
+
+German: ['Weißt', 'du', 'noch', 'welches', 'Wort', 'es', 'war', '?', '"']
+English: 431,Do|you|know You|know|what You|know|which Do|you|even You|know|that Do|you|remember You|know|the 
+
+German: ['Aber', 'der', 'Beruf', 'des', 'Bäckers', ',', 'wir', 'kennen', 'Bäcker', '.']
+English: 436,But|the|profession But|the|job But|the|workplace But|the|work but|the|job But|<comma>|the But|th
+
+German: ['Eine', 'der', 'ausgefeilteren', 'Techniken', 'hierfür', 'kann', '2', '500', 'Jahre', 'zurück', 'auf', 'die', 'antiken', 'Griechen', 'datiert', 'werden', '.']
+English: 441,One|of|the One|of|those One|of|these One|of|them one|of|the And|one|of Someday|<comma>|one So|on
+
+German: ['Es', 'ist', 'eine', 'Tragödie', 'nach', 'der', 'anderen', '.']
+English: 446,It|'s|a It|is|a It|'s|tragedy This|is|a It|'s|an It|is|tragedy This|is|tragedy That|'s|tragedy A
+
+German: ['Ich', 'fand', 'das', 'alles', 'einfach', 'faszinierend', 'und', 'bin', 'noch']
+English: 451,I|found|all I|just|found I|found|it I|found|this And|I|found I|was|just I|thought|this And|I|was
+
+German: ['Es', 'ist', 'wie', 'eine', 'Gruppe', 'von', 'Menschen', ',', 'die', 'da', 'sitzen', 'und', 'einen', 'Test', 'schreiben', '.']
+English: 456,It|'s|like It|is|like It|'s|a It|'s|as This|is|like It|'s|kind It|'s|how It|'s|sort And|it|'s It
+
+German: ['Ich', 'musste', 'feststellen', ',', 'dass', 'es', 'erstaunlich', 'viel', 'Spaß', 'macht', '.']
+English: 461,I|had|to And|I|had So|I|had and|I|had I|needed|to I|'ve|had Now|<comma>|I I|knew|that I|knew|it 
+
+German: ['Ich', 'ging', 'zu', 'dem', 'selben', 'Wettkampf', ',', 'den', 'ich', 'ein', 'Jahr', 'früher', 'besucht', 'hatte']
+English: 466,I|went|to I|went|back And|I|went I|walked|to So|I|went I|headed|to I|went|into I|was|going And|I
+
+German: ['Das', 'sind', 'nur', 'Tricks', '.']
+English: 471,These|are|just Those|are|just They|'re|just These|are|only It|'s|just That|'s|just This|is|just 
+
+German: ['Der', 'Gedächtnispalast', ',', 'diese', 'Gedächtnistechniken', ',', 'sie', 'sind', 'alle', 'nur', 'Abkürzungen', '.']
+English: 476,The|Pharaoh|<comma> The|key|<comma> They|'re|all The|main|thing The|main|one The|most|complex Th
+
+German: ['Ich', 'habe', 'gelernt', ',', 'dass', 'das', 'Gedächtnis', ',', 'in', 'jedem', 'von', 'uns', ',', 'unglaubliche', 'Kapazitäten', 'besitzt', '.']
+English: 481,I|learned|that I|'ve|learned I|have|learned And|I|learned I|learned|the And|I|'ve So|I|learned I
+
+German: ['Dabei', 'war', 'der', 'IQ', 'nicht', 'der', 'einzige', 'Unterschied', 'zwischen', 'den', 'besten', 'und', 'schlechtesten', 'Schülern', '.']
+English: 486,And|the|IQ The|IQ|was And|the|I.Q. And|that|'s And|that|was And|this|was And|this|is The|IQ|is A
+
+German: ['Mein', 'Forschungsteam', 'und', 'ich', 'gingen', 'zur', 'West', 'Point', 'Militärakademie', '.']
+English: 491,My|favorite|and My|20s|and My|partner|and My|sponsor|and My|Ph.D.|and My|doctor|and My|boss|and 
+
+German: ['In', 'all', 'diesen', 'unterschiedlichen', 'Kontexten', 'trat', 'eine', 'Eigenschaft', 'als', 'bedeutender', 'Hinweis', 'auf', 'Erfolg', 'hervor', '.']
+English: 496,In|all|these And|in|all In|all|of So|in|all Now|<comma>|in So|<comma>|in In|all|those In|all|thi
+
+German: ['Durchhaltevermögen', 'ist', 'Stehvermögen', '.']
+English: 501,Coke|is|inevitable Now|<comma>|multi Coke|is|a In|fact|<comma> Now|<comma>|the So|<comma>|uh Cok
+
+German: ['Wie', 'halte', 'ich', 'sie', 'für', 'Distanzläufe', 'motiviert', '?', '"']
+English: 506,How|do|I How|do|you How|are|I How|am|I How|would|I how|do|I How|do|we What|do|I How|can|I How|di
+
+German: ['Aber', 'wir', 'brauchen', 'mehr', '.']
+English: 511,But|we|need We|need|more But|you|need But|we|have but|we|need And|we|need But|it|needs We|need|t
+
+German: ['Vielen', 'Dank', '.']
+English: 516,Thank|you|. Thank|you|very Thanks|very|much Thank|you|so Thanks|a|lot So|thank|you So|<comma>|th
+
+German: ['Das', 'ist', 'schade', 'an', 'einem', 'Ort', 'mit', 'einer', 'so', 'reichen', 'Kultur', 'und', 'Tradition', '.']
+English: 521,And|that|'s This|is|a That|'s|a It|'s|a And|this|is And|so|that This|is|very Now|<comma>|that So
+
+German: ['Ich', 'überlegte', 'auch', ':', 'Wie', 'schließen', 'wir', 'das', 'Gebäude', '?']
+English: 526,And|I|was And|I|also I|was|also I|also|thought And|also|<comma> So|I|was And|I|'m And|I|thought 
+
+German: ['Wir', 'schufen', 'einen', 'wertvollen', 'Beitrag', ',', 'indem', 'wir', 'Solarpanel', 'auf', 'dem', 'Dach', 'anbrachten', '.']
+English: 531,We|created|a And|we|created We|made|a We|created|one So|we|created We|created|an We|built|a We|p
+
+German: ['Es', 'verstärkt', 'auch', 'das', 'Konzept', 'der', 'Tore', '.']
+English: 536,It|also|enhances It|also|increases It|also|promotes It|also|feeds It|also|illustrates And|it|als
+
+German: ['Davon', 'gibt', 'es', 'meiner', 'Ansicht', 'nach', 'drei', '.']
+English: 541,This|is|where That|'s|where This|is|what There|are|my And|that|'s That|'s|what And|there|are It|
+
+German: ['Erst', 'die', 'Behauptung', ':', 'Wieso', 'denken', 'Leute', ',', 'dass', 'Vertrauen', 'zurückgegangen', 'ist', '?']
+English: 546,Only|the|claim First|of|all Just|the|claim Just|the|statement First|the|claim The|claim|is The|s
+
+German: ['Was', 'könnten', 'sie', 'sonst', 'erheben', '?']
+English: 551,What|else|could What|could|they What|would|they What|else|would What|might|they What|can|they So
+
+German: ['Vertrauen', 'Sie', 'Grundschullehrern', '?']
+English: 556,Do|you|trust You|trust|me You|'ve|got Are|you|trust You|know|? You|know|<comma> You|trust|it So|
+
+German: ['Vielleicht', 'weiß', 'ich', 'ja', 'zufällig', ',', 'dass', 'sie', 'nicht', 'gut', 'Auto', 'fährt', '.']
+English: 561,Maybe|I|happen Maybe|I|know And|maybe|I Maybe|I|knew Maybe|I|have Maybe|I|realized Well|<comma>|
+
+German: ['Ich', 'würde', 'versuchen', ',', 'den', 'Vertrauenswürdigen', 'mehr', 'zu', 'vertrauen', ',', 'den', 'Vertrauensunwürdigen', 'aber', 'nicht', '.']
+English: 566,I|would|try I|'d|try I|was|going I|'m|going And|I|would I|was|trying I|will|try So|I|would Now|I
+
+German: ['Und', 'um', 'das', 'zu', 'tun', ',', 'müssen', 'wir', 'drei', 'Dinge', 'betrachten', ':']
+English: 571,And|to|do So|to|do And|in|order In|order|to To|do|that And|so|to Now|to|do And|we|have Now|<comm
+
+German: ['Vertrauen', 'ist', 'die', 'Reaktion', '.']
+English: 576,Trust|is|the And|trust|is trust|is|the So|<comma>|trust Now|<comma>|trust Transparency|is|the So
+
+German: ['So', 'viel', 'also', 'zum', 'Ziel', '.']
+English: 581,So|that|'s So|a|lot So|this|is So|much|of So|<comma>|that So|<comma>|a So|far|as So|<comma>|this
+
+German: ['Wir', 'können', 'ein', 'bisschen', 'Vertrauenswürdigkeit', 'gewinnen', '.']
+English: 586,We|can|win We|can|make We|can|actually We|can|do We|can|also And|we|can We|can|won We|can|gained
+
+German: ['Man', 'muss', 'also', 'vertrauenswürdig', 'sein', '.']
+English: 591,So|you|have So|you|need So|you|must So|<comma>|you So|you|'ve So|we|have So|we|need You|need|to 
+
+German: ['Darin', 'steckt', 'eine', 'wichtige', 'Moral', '.']
+English: 596,It|'s|an There|'s|an And|there|'s It|'s|a There|'s|a This|is|a There|is|a There|is|an And|this|i
+
+German: ['Ihr', 'Lieblingscharakter', 'war', 'natürlich', 'Glinda', '.']
+English: 601,Of|course|<comma> Her|cousin|<comma> And|<comma>|of And|of|course It|was|of You|know|<comma> So|
+
+German: ['Sie', 'wissen', ',', 'wovon', 'ich', 'rede', ',', 'oder', '?']
+English: 606,You|know|what And|you|know They|know|what So|you|know I|know|what Well|<comma>|you Now|you|know 
+
+German: ['Zu', 'jenem', 'Zeitpunkt', 'hatte', 'ich', 'ebenfalls', 'einen', 'Sohn', '.']
+English: 611,At|that|point I|also|had I|was|also And|at|that At|that|time That|'s|when And|I|also That|'s|whe
+
+German: ['Hat', 'er', 'aufgeschnappt', ',', 'dass', 'es', 'um', 'Mut', ',', 'Beharrlichkeit', 'und', 'Loyalität', 'geht', '?']
+English: 616,Did|he|feel Did|he|know Did|he|notice Did|he|see Did|he|realize Did|he|think Did|he|say Did|he|h
+
+German: ['Jedoch', 'habe', 'ich', 'nicht', 'so', 'viel', 'darüber', 'gelesen', ',', 'wie', 'Jungs', 'mit', 'diesem', 'Einfluss', 'umgehen', '.']
+English: 621,But|I|did But|I|do However|<comma>|I Yet|I|'ve Yet|<comma>|I But|I|'ve But|I|have Actually|<comm
+
+German: ['Es', 'gibt', 'keine', 'Vorbilder', 'für', 'sie', '.']
+English: 626,There|are|no There|'s|no There|is|no There|are|n't They|do|n't There|'s|not You|do|n't We|do|n't
+
+German: ['Aber', 'so', 'gut', 'wie', 'keiner', 'dieser', 'Filme', 'hat', 'den', 'Bechdel-Test', 'bestanden', '.']
+English: 631,But|as|well But|as|good But|not|as But|just|as But|almost|as But|never|as But|all|of But|that|'s
+
+German: ['Verstanden', '?', 'Dankeschön', '.']
+English: 636,Huh|?|Thank ?|Thank|you Namaste|?|Thank Happy|?|Thank Audience|:|Thank Oops|?|Thank ROD|:|Thank 
+
+German: ['Also', 'lassen', 'Sie', 'uns', 'einen', 'Blick', 'auf', 'die', 'Zahlen', 'werfen', '.']
+English: 641,So|let|'s So|<comma>|let And|so|let Now|let|'s So|let|me So|let|us And|let|'s Well|let|'s So|tak
+
+German: ['eine', 'von', 'fünf', 'Frauen', 'in', 'den', 'USA', 'angibt', ',', 'dass', 'sie', 'in', 'ihrem', 'Leben', 'bereits', 'sexuell', 'genötigt', 'wurde', '.']
+English: 646,One|of|five One|out|of One|from|five One|by|five One|of|the One|in|five So|one|of One|in|the One
+
+German: ['Nehmen', 'wir', 'diese', 'Geschichte', 'so', 'auf', '?']
+English: 651,Are|we|going I|mean|<comma> So|do|we So|does|we Let|'s|take Is|we|looking Do|we|have Do|we|look 
+
+German: ['Obi-Wan', 'Kenobi', 'und', 'Glinda', '.']
+English: 656,Two|-|year Two|hundred|- A|hundred|- Seven|hundred|- Early|-|three Two|hundred|aluminum Seven|-|
+
+German: ['Ich', 'möchte', 'mehr', 'Aufgaben', 'wie', 'diese', '.']
+English: 661,I|want|more I|want|to I|like|more So|I|want And|I|want I|like|to I|would|like I|'d|like I|wanted
+
+German: ['Sein', 'Dorf', 'liegt', 'in', 'der', 'Nähe', 'von', 'Mogadischu', '.']
+English: 666,His|village|is His|village|lies His|village|was His|village|'s The|village|is Its|village|is The
+
+German: ['Er', 'trifft', 'diese', 'dynamische', 'Gruppe', 'junger', 'Leute', 'und', 'sie', 'geben', 'ihm', 'eine', 'Chance', '.']
+English: 671,He|meets|this He|meets|these He|strikes|this He|finds|this And|he|meets He|causes|this He|repres
+
+German: ['An', 'einem', 'schönen', 'Tag', 'in', 'Mogadischu', ',', 'unter', 'azurblauem', 'Himmel', 'geht', 'eine', 'Autobombe', 'in', 'die', 'Luft', '.']
+English: 676,On|a|beautiful In|a|beautiful On|a|nice In|a|nice And|in|a At|a|beautiful A|beautiful|day A|nice
+
+German: ['Im', 'Jahr', '2030', 'werden', 'drei', 'von', 'fünf', 'Einwohnern', 'in', 'den', 'Städten', 'jünger', 'als', '18', 'Jahre', 'sein', '.']
+English: 681,In|2030|<comma> In|Tanzania|<comma> And|in|2030 In|2030|three So|in|2030 Over|2030|<comma> By|20
+
+German: ['Wäre', 'ich', 'Terrorist', 'geworden', '?']
+English: 686,Would|I|have Would|I|become Would|I|be Had|I|become Could|I|become Could|I|have Would|I|get Coul
+
+German: ['Er', 'besuchte', 'die', 'Universität', 'in', 'Mogadischu', 'und', 'machte', 'dort', 'seinen', 'Abschluss', '.']
+English: 691,He|went|to He|was|attending He|went|in He|went|into He|went|back And|he|went He|went|up He|looke
+
+German: ['Aden', 'erkannte', 'die', 'Gelegenheit', 'und', 'ergriff', 'sie', '.']
+English: 696,By|the|time And|he|realized We|realized|the In|fact|<comma> And|the|opportunity And|fortunately|
+
+German: ['Ich', 'glaube', ',', 'es', 'ist', 'seine', 'Fähigkeit', ',', 'eine', 'neue', 'Gelegenheit', 'zu', 'erkennen', 'und', 'zu', 'nutzen', '.']
+English: 701,I|think|it And|I|think Now|<comma>|I So|<comma>|I I|believe|it And|I|believe So|I|think I|think|
+
+German: ['Er', 'gründete', 'eine', 'Landschaftsgärtnerei', 'mit', 'Blumenladen', '.']
+English: 706,He|started|a He|founded|a And|he|started He|founded|an He|started|with He|was|a He|created|a He|
+
+German: ['Er', 'bestärkte', 'sie', 'darin', ',', 'dass', 'sie', 'Unternehmer', 'sein', 'können', ',', 'dass', 'sie', 'die', 'Veränderung', 'vollbringen', 'könnten', '.']
+English: 711,He|warned|them He|told|them He|decides|they He|asked|them He|trusted|them He|admired|them He|ann
+
+German: ['Mohamed', 'verkauft', 'nicht', 'einfach', 'nur', 'Blumen', '.']
+English: 716,It|'s|not High|-|graders You|'re|not Now|<comma>|Spider Now|<comma>|selling Now|<comma>|GPS And|
+
+German: ['Vielen', 'Dank', '.']
+English: 721,Thank|you|. Thank|you|very Thanks|very|much Thank|you|so Thanks|a|lot So|thank|you So|<comma>|th
+
+German: ['Das', 'entwickelte', 'sich', 'zu', 'einer', 'Leidenschaft', ',', 'Dinge', 'zu', 'finden', ',', 'zu', 'einer', 'Liebe', 'für', 'Vergangenes', 'und', 'die', 'Archäologie', '.']
+English: 726,It|evolved|to And|that|became And|this|became And|that|evolved It|became|a So|this|became That|e
+
+German: ['Dieses', 'Gebiet', 'ist', 'riesig', '–', 'die', 'Fläche', 'beträgt', 'vier', 'mal', 'drei', 'Meilen', '.']
+English: 731,This|area|is This|region|is This|territory|is That|area|is And|this|area That|territory|is So|th
+
+German: ['Wir', 'fanden', 'also', 'eine', 'dichte', 'Schicht', 'der', 'Bewohnung', 'an', 'dieser', 'Stätte', ',', 'die', 'auf', 'das', 'Mittlere', 'Reich', 'zurückging', '.']
+English: 736,So|<comma>|we So|we|found So|what|we And|so|we So|<comma>|what And|so|what So|we|discovered So|w
+
+German: ['Danke', 'vielmals', '.']
+English: 741,Thank|you|very Thank|you|so Thank|you|. Thanks|very|much Thanks|so|much Thank|you|all Thanks|a|l
+
+German: ['Da', 'wir', 'nur', '5', 'Minuten', 'zur', 'Verfügung', 'haben', ',', 'wäre', 'eine', 'schnellere', 'und', 'einfachere', 'Methode', 'sehr', 'nützlich', '.']
+English: 746,Because|we|only Because|we|have Because|we|'re Because|we|'ve If|we|have Because|we|just If|we|'
+
+German: ['Öffnen', 'Sie', 'Ihren', 'Mund', 'soweit', 'wie', 'möglich', ',', 'bis', 'er', 'quadratisch', 'ist', '.']
+English: 751,Open|your|mouth Open|your|mouths Please|open|your So|open|your And|open|your Just|open|your You|
+
+German: ['Die', '"', 'Sonne', '"', '.']
+English: 756,The|sun|. The|<quote>|sun The|<quote>|Sun The|Sun|. It|'s|called The|Sun|'s The|<quote>|The It|'
+
+German: ['Ein', 'Mensch', '.']
+English: 761,It|'s|a A|human|being A|human|. A|human|man One|human|. A|man|. He|'s|a One|person|. One|man|. A
+
+German: ['Ein', 'Baum', 'steht', 'für', 'einen', 'Baum', '.', 'Zwei', 'Bäume', 'zusammen', 'stehen', 'für', 'ein', '"', 'Wäldchen', '"', '.']
+English: 766,A|tree|stands A|tree|represents A|tree|is A|tree|sits A|tree|says One|tree|stands One|tree|repre
+
+German: ['Erinnern', 'Sie', 'sich', 'an', 'das', 'Feuer', '?']
+English: 771,Do|you|remember Remember|that|fire Remember|the|fire You|remember|the Remember|this|fire Remembe
+
+German: ['Zwei', 'Sonnen', 'zusammen', 'ergeben', '"', 'wohlhabend', '"', '.']
+English: 776,Two|non|- Two|-|two Two|of|them Two|main|holes Two|tens|of Two|-|five Two|approaches|together Th
+
+German: ['Tür', '.', 'Ein', 'Brett', 'in', 'der', 'Tür', 'steht', 'für', 'den', '"', 'Riegel', '"', '.']
+English: 781,A|door|. Open|.|A There|'s|a So|<comma>|door Open|.|One Radio|.|A The|door|. It|'s|a There|is|a 
+
+German: ['Zwei', 'Frauen', 'zusammen', 'stehen', 'für', 'einen', '"', 'Streit', '"', '.']
+English: 786,Two|women|are Two|women|together Two|women|stand Two|women|standing There|are|two Two|women|comb
+
+German: ['Wenn', 'wir', 'diese', 'Schriftzeichen', 'können', ',', 'beginnen', 'wir', 'sie', 'zusammenzusetzen', '.']
+English: 791,If|we|can When|we|can So|if|we And|if|we If|you|can As|we|can If|we|could And|when|we So|when|we
+
+German: ['Ein', 'Mensch', 'hinter', 'Japan', 'ergibt', '?']
+English: 796,A|human|being There|'s|a Is|there|a One|human|under Has|a|human It|'s|a Getting|a|man A|human|un
+
