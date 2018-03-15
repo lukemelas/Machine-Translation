@@ -1,0 +1,410 @@
+COMMAND main.py --model saves/for-writeup/big-27-15-48-37/model.pkl --visualize
+ARGS: Namespace(attn='dot-product', b=64, bi=True, dp=0.3, emb=300, epochs=50, evaluate=False, hs=300, lr=0.002, model='saves/for-writeup/big-27-15-48-37/model.pkl', nlayers=2, predict=None, predict_from_input=None, predict_outfile='data/preds.txt', reverse_input=False, v=0, visualize=True)
+OPTIMIZER: <torch.optim.adam.Adam object at 0x7f2e77db1630>
+LEARNING RATE: 0.002
+SCHEDULER: {'verbose': True, 'optimizer': <torch.optim.adam.Adam object at 0x7f2e77db1630>, 'cooldown': 6, 'last_epoch': -1, 'is_better': <function ReduceLROnPlateau._init_is_better.<locals>.<lambda> at 0x7f2e804ade18>, 'mode_worse': -inf, 'eps': 1e-08, 'cooldown_counter': 0, 'threshold_mode': 'rel', 'min_lrs': [0], 'mode': 'max', 'patience': 30, 'num_bad_epochs': 0, 'factor': 0.25, 'threshold': 0.0001, 'best': -inf}
+MODEL: Seq2seq (
+  (encoder): EncoderLSTM (
+    (embedding): Embedding(13353, 300)
+    (lstm): LSTM(300, 300, num_layers=2, dropout=0.3, bidirectional=True)
+    (dropout): Dropout (p = 0.3)
+  )
+  (decoder): DecoderLSTM (
+    (embedding): Embedding(11560, 300)
+    (lstm): LSTM(300, 300, num_layers=4, dropout=0.3)
+    (dropout): Dropout (p = 0.3)
+  )
+  (attention): Attention (
+  )
+  (linear1): Linear (600 -> 300)
+  (tanh): Tanh ()
+  (dropout): Dropout (p = 0.3)
+  (linear2): Linear (300 -> 11560)
+)
+
+VISUALIZING ATTENTION DISTRIBUTION
+Source: 1995 liegt offensichtlich eine lange Zeit zurück .
+Target: <s> Now 1995 , obviously that was quite a long time ago . </s> <pad> <pad> <pad> <pad>
+Training Pred: Now 1995 , obviously a 's a a long time ago . </s> </s> : . . .
+Validation Greedy Pred: <s> Now 1995 , obviously a long time ago , obviously , is a long time ago . </s>
+Validation Beam Pred: <s> Now 1995 , obviously a long time ago , obviously . </s>
+
+Source: Und sie brachten das Gebäude in Ordnung .
+Target: <s> And they <unk> that building . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: And they brought the building . </s> </s> : . . . . . . . . .
+Validation Greedy Pred: <s> And they brought the building out . </s>
+Validation Beam Pred: <s> And they <unk> the building . </s>
+
+Source: Hier sind Fotos von zwei jungen Männern .
+Target: <s> Here are photographs of two young men . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Here are photographs of two young men . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> Here are photographs of two young men . </s>
+Validation Beam Pred: <s> Here are photographs of two young men . </s>
+
+Source: Man kann eine Kultur ohne Austausch pflegen .
+Target: <s> You can have culture without exchange . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: You can exchange culture without exchange . </s> </s> . . . . . . . . .
+Validation Greedy Pred: <s> You can exchange a culture without exchange . </s>
+Validation Beam Pred: <s> You can exchange a culture without exchange . </s>
+
+Source: " <unk> , North Carolina , 1999 .
+Target: <s> " <unk> , North Carolina , 1999 . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: " <unk> , North Carolina , 1999 . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> " <unk> , North Carolina , 1999 . </s>
+Validation Beam Pred: <s> " <unk> , North Carolina , 1999 . </s>
+
+Source: Ich meine , denken Sie darüber nach .
+Target: <s> I mean , think about how much we love this . </s> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I mean , think about it it it think it . </s> </s> : . . . .
+Validation Greedy Pred: <s> I mean , think about it . </s>
+Validation Beam Pred: <s> I mean , think about it . </s>
+
+Source: Seit wann gibt es also diese <unk> ?
+Target: <s> So when did this habit start ? </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: So when did this leave begin ? </s> </s> : : . . . . . . .
+Validation Greedy Pred: <s> So when did this leave you ? </s>
+Validation Beam Pred: <s> So when did we have this <unk> ? </s>
+
+Source: Ja , richtig . Das ist Barbie .
+Target: <s> Yes . That 's right . This is Barbie . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Yeah , Right 's right . This is Barbie . </s> </s> : . . . . .
+Validation Greedy Pred: <s> Yeah , right . That 's Barbie . </s>
+Validation Beam Pred: <s> Yes , right . That 's Barbie . </s>
+
+Source: Aber gibt 's da auch eine Kehrseite ?
+Target: <s> Now , are there <unk> to that ? </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: But , is there <unk> ? this ? </s> </s> : , , , , , , ,
+Validation Greedy Pred: <s> But is there a <unk> ? </s>
+Validation Beam Pred: <s> But is there <unk> ? </s>
+
+Source: In solchen Momenten ist unser Selbst vollständig .
+Target: <s> At such moments , our selves are complete . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: In such moments , our selves are complete . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> In such moments , our selves are complete . </s>
+Validation Beam Pred: <s> In such moments , our selves are complete . </s>
+
+Source: Aber es gehört trotzdem zur Kommunikation untereinander .
+Target: <s> but it 's behavior somebody is doing as part of their <unk> act to you , </s>
+Training Pred: But it 's also to 's listening to well of it communication . . you . </s> </s>
+Validation Greedy Pred: <s> But it 's also part of communication . </s>
+Validation Beam Pred: <s> But it 's also part of communication . </s>
+
+Source: Aber ich denke , das ist unwahrscheinlich .
+Target: <s> But I think that 's unlikely . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: But I think that 's unlikely . </s> </s> : . . . . . . . .
+Validation Greedy Pred: <s> But I think that 's unlikely . </s>
+Validation Beam Pred: <s> But I think that 's unlikely . </s>
+
+Source: Dieser Tag hat unsere Sicht nachhaltig verändert .
+Target: <s> And that day really changed our perspective . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: This this day , changed our perspective . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> This day , our perspective has changed sustainable . </s>
+Validation Beam Pred: <s> This day , our view has changed . </s>
+
+Source: <unk> <unk> arbeitet hart an dieser Entwicklung .
+Target: <s> <unk> <unk> is working hard on this evolution . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: <unk> <unk> works working hard at this development . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> <unk> <unk> works hard on this development . </s>
+Validation Beam Pred: <s> <unk> <unk> works hard on this development . </s>
+
+Source: Aber woher werden wir die Software erhalten ?
+Target: <s> But where will we get the software ? </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: But where are we get the software ? </s> </s> : , , , . . . .
+Validation Greedy Pred: <s> But where are we going to get the software ? </s>
+Validation Beam Pred: <s> But where will we get the software ? </s>
+
+Source: Ich erinnere mich nicht an die <unk> .
+Target: <s> I do not remember what time it was . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I do n't remember the the is was . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> I do n't remember the <unk> . </s>
+Validation Beam Pred: <s> I do n't remember the <unk> . </s>
+
+Source: Dann hat man immer noch dreifache <unk> .
+Target: <s> And then you have three -- you still have the triple <unk> . </s> <pad> <pad> <pad>
+Training Pred: Then then you still three times you still have three triple <unk> . </s> </s> : . .
+Validation Greedy Pred: <s> Then you 've still got three <unk> . </s>
+Validation Beam Pred: <s> And then you still have three <unk> . </s>
+
+Source: Alle in Ihrem Leben hat sich verändert .
+Target: <s> Everything in your life has changed . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: All in your life has changed . </s> </s> : . . . . . . . .
+Validation Greedy Pred: <s> All in your life has changed . </s>
+Validation Beam Pred: <s> Everybody in your life has changed . </s>
+
+Source: Wir fingen an , Männer zu unterrichten .
+Target: <s> So we started training men because the men should know </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: We we started teaching men . we men started teach . </s> : . . . . .
+Validation Greedy Pred: <s> We started teaching men . </s>
+Validation Beam Pred: <s> We started teaching men . </s>
+
+Source: Das ist ein Teil der guten Nachrichten .
+Target: <s> This is one piece of good news . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: That is part part of good news . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> That 's part of the good news . </s>
+Validation Beam Pred: <s> That 's part of the good news . </s>
+
+Source: Das hier ist rot , wie TED .
+Target: <s> This is red , like TED . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: This is red , like TED . </s> </s> : . . . . . . . .
+Validation Greedy Pred: <s> This is red , like TED . </s>
+Validation Beam Pred: <s> This is red , like TED . </s>
+
+Source: Im Connectome treffen sich Veranlagung und Erziehung .
+Target: <s> The connectome is where nature meets nurture . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: The connectome is where <unk> meets education . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> The connectome is where <unk> and education . </s>
+Validation Beam Pred: <s> The connectome of the connectome is <unk> . </s>
+
+Source: Die haben den selben Anteil wie wir .
+Target: <s> They have the same share that we have . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: They have the same share as we have . </s> </s> . . . . . . .
+Validation Greedy Pred: <s> They have the same share as we do . </s>
+Validation Beam Pred: <s> They have the same share as we do . </s>
+
+Source: Er nannte sie " <unk> <unk> " .
+Target: <s> It was what he called " fine - <unk> <unk> . " </s> <pad> <pad> <pad> <pad>
+Training Pred: He called called he called " <unk> - <unk> <unk> . " </s> </s> . . . .
+Validation Greedy Pred: <s> He called it " <unk> <unk> . " </s>
+Validation Beam Pred: <s> He called it " <unk> <unk> . " </s>
+
+Source: Es ist eine neue Klasse von <unk> .
+Target: <s> This is a new class of <unk> . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: It is a new class of <unk> . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> It 's a new class of <unk> . </s>
+Validation Beam Pred: <s> It 's a new class of <unk> . </s>
+
+Source: <unk> war in den <unk> dieses <unk> .
+Target: <s> Rwanda was in the <unk> of this <unk> war . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: <unk> was in the <unk> of this <unk> . . </s> </s> : . . . . .
+Validation Greedy Pred: <s> <unk> was in the <unk> of this <unk> . </s>
+Validation Beam Pred: <s> <unk> was in the <unk> of this <unk> . </s>
+
+Source: Es ist tatsächlich beängstigend . Und schön .
+Target: <s> It 's actually scary . It 's beautiful . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: It 's actually scary . It 's beautiful . </s> </s> . . . . . . .
+Validation Greedy Pred: <s> It 's actually scary . It 's beautiful . </s>
+Validation Beam Pred: <s> It 's actually scary . It 's beautiful . </s>
+
+Source: Das ist auf dem Weg zur Schule .
+Target: <s> This is on the way to school . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: This is on the way to school . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> This is on the way to school . </s>
+Validation Beam Pred: <s> This is on the way to school . </s>
+
+Source: Es hat drei verschiedene Arten von <unk> .
+Target: <s> It has three different kinds of strings . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: It has three different types of <unk> . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> It has three different types of <unk> . </s>
+Validation Beam Pred: <s> It has three different types of <unk> . </s>
+
+Source: L : Ich will perfektes Englisch sprechen .
+Target: <s> T : I want to speak perfect English . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: T : I want to speak perfect English . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> T : I want to speak perfect English . </s>
+Validation Beam Pred: <s> T : I want to speak perfect English . </s>
+
+Source: Geschichten haben <unk> . Geschichten haben Ideen .
+Target: <s> So , stories have characters . Stories have concepts . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Stories , stories have <unk> . Stories have ideas . </s> </s> : : . . . .
+Validation Greedy Pred: <s> Stories have <unk> . Stories have ideas . </s>
+Validation Beam Pred: <s> Stories have <unk> . Stories have ideas . </s>
+
+Source: Ich versuche , die Infrastruktur zu verbessern .
+Target: <s> I 'm trying to improve infrastructure . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I 'm trying to improve infrastructure . </s> </s> : . . . . . . . .
+Validation Greedy Pred: <s> I 'm trying to improve infrastructure . </s>
+Validation Beam Pred: <s> I 'm trying to improve infrastructure . </s>
+
+Source: Interessanterweise passiert nach einigen Monaten das Folgende .
+Target: <s> Interestingly enough , you give them a few months , and this is what happens . </s>
+Training Pred: Interestingly , , a see this a couple months . </s> this is what happens . </s> </s>
+Validation Greedy Pred: <s> Interestingly , there 's a couple of months to happen . </s>
+Validation Beam Pred: <s> Interestingly , there 's a couple of months that happens . </s>
+
+Source: Das darfst du nie wieder tun . “
+Target: <s> You must never do that again . " </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: You must never do it again . " </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> You must never do it again . " </s>
+Validation Beam Pred: <s> You must never do it again . " </s>
+
+Source: Weil ich ein paar <unk> zeigen will .
+Target: <s> Because I want to show points of interest . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Because I want to show some of <unk> . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> Because I want to show some <unk> . </s>
+Validation Beam Pred: <s> Because I want to show some <unk> . </s>
+
+Source: Er lehrte mich sogar das <unk> <unk> .
+Target: <s> He even taught me the <unk> <unk> . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: He even taught me the <unk> <unk> . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> He even taught me the <unk> <unk> . </s>
+Validation Beam Pred: <s> He even taught me the <unk> <unk> . </s>
+
+Source: Bei jeder Schwelle , wird es härter .
+Target: <s> And at each threshold , the going gets tougher . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: With at every threshold , it gets gets tougher . </s> </s> : . . . . .
+Validation Greedy Pred: <s> With each threshold , it gets tougher . </s>
+Validation Beam Pred: <s> With each threshold , it gets tougher . </s>
+
+Source: Und , sehen Sie die Ausrichtung hier ?
+Target: <s> See this wheel 's heading here ? </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: And , alignment , heading here ? </s> </s> : , , , . . . . .
+Validation Greedy Pred: <s> And , you see the alignment here ? </s>
+Validation Beam Pred: <s> And , you see the alignment here ? </s>
+
+Source: Und die Natur schafft daraus große Skelette .
+Target: <s> And nature builds large skeletons out of it . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: And nature builds large skeletons out of it . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> And nature builds large skeletons out of it . </s>
+Validation Beam Pred: <s> And nature builds large skeletons out of it . </s>
+
+Source: Wir werden eine Nation mit zwei Klassen .
+Target: <s> We are becoming a nation of just two classes . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: We 're going a nation with two two classes . </s> </s> : . . . . .
+Validation Greedy Pred: <s> We 're going to be a nation with two classes . </s>
+Validation Beam Pred: <s> We 're going to be a nation with two classes . </s>
+
+Source: So lernt man als Kind eine Sprache .
+Target: <s> And this is what you learn when you learn a language as a child . </s> <pad>
+Training Pred: This that is how you learn as you learn a language . a child . </s> </s> .
+Validation Greedy Pred: <s> This is how you learn a language as a child . </s>
+Validation Beam Pred: <s> This is how you learn a language as a child . </s>
+
+Source: Also , das ist natürlich Johnny <unk> .
+Target: <s> So that 's Johnny <unk> , of course . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: So , 's Johnny <unk> , of course . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> So , that 's Johnny <unk> . </s>
+Validation Beam Pred: <s> So , that 's Johnny <unk> . </s>
+
+Source: Nun war natürlich Babbages Maschine völlig mechanisch .
+Target: <s> Now , of course , Babbage 's machine was entirely mechanical . </s> <pad> <pad> <pad> <pad>
+Training Pred: Now , of course , Babbage 's machine was completely mechanical . </s> </s> : . . .
+Validation Greedy Pred: <s> Now , of course , Babbage 's machine was completely mechanical . </s>
+Validation Beam Pred: <s> Now , of course , Babbage 's machine was completely mechanical . </s>
+
+Source: Die Untersuchung der Patienten dauert 15 Minuten .
+Target: <s> We 're doing <unk> exams with patients . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: The 're going the patients . patients . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> The patients are going to take 15 minutes . </s>
+Validation Beam Pred: <s> The patients are going to take 15 minutes . </s>
+
+Source: Ich denke es ist unsere kollektive Intelligenz .
+Target: <s> I think it 's our collective intelligence . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I think it 's our collective intelligence . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> I think it 's our collective intelligence . </s>
+Validation Beam Pred: <s> I think it 's our collective intelligence . </s>
+
+Source: Ich muss nicht in einem <unk> sein .
+Target: <s> I do n't have to be in a behavioral context . </s> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I do n't have to be in a <unk> <unk> . </s> </s> : . . . .
+Validation Greedy Pred: <s> I do n't have to be in a <unk> . </s>
+Validation Beam Pred: <s> I do n't have to be in a <unk> . </s>
+
+Source: Der Krebs <unk> die Mauer meiner <unk> .
+Target: <s> Cancer exploded the wall of my <unk> . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Cancer <unk> the wall of my <unk> . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> Cancer <unk> the wall of my <unk> . </s>
+Validation Beam Pred: <s> Cancer <unk> the wall of my <unk> . </s>
+
+Source: Das ist das Diagramm für ein Medikament .
+Target: <s> This is the landscape of one medicine . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: This is the graph for a medicine . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> This is the graph for a drug . </s>
+Validation Beam Pred: <s> This is the graph for a drug . </s>
+
+Source: <unk> von der <unk> ihres <unk> <unk> .
+Target: <s> <unk> , <unk> , by the <unk> in her own county of <unk> . </s> <pad> <pad>
+Training Pred: <unk> from from from from the <unk> of their <unk> <unk> . <unk> . </s> </s> : .
+Validation Greedy Pred: <s> <unk> from the <unk> of their <unk> . </s>
+Validation Beam Pred: <s> <unk> from the <unk> of their <unk> . </s>
+
+Source: Jedes geistige Organ ist angesprochen . Wirklich .
+Target: <s> Every mental organ addressed . It really is . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Every mental organ addressed . Really really is . </s> </s> . . . . . . .
+Validation Greedy Pred: <s> Every mental organ addressed . Really . </s>
+Validation Beam Pred: <s> Every mental organ addressed . Really . </s>
+
+Source: Am <unk> aber sehe ich <unk> Freude .
+Target: <s> but most of all , what I see is just joy . </s> <pad> <pad> <pad> <pad>
+Training Pred: But at of the , I I see is <unk> joy . </s> </s> : . . .
+Validation Greedy Pred: <s> But at the time , I see <unk> joy . </s>
+Validation Beam Pred: <s> But at the time , I see <unk> joy . </s>
+
+Source: Also , willkommen in der <unk> Wüste .
+Target: <s> So , welcome to the Golden Desert . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: So welcome welcome to the <unk> Desert . </s> </s> . . . . . . . .
+Validation Greedy Pred: <s> So welcome to the <unk> desert . </s>
+Validation Beam Pred: <s> So welcome to the <unk> desert . </s>
+
+Source: Das war für uns der große Durchbruch .
+Target: <s> That was the real breakthrough for us . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: That was the big breakthrough for us . </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> That was the big breakthrough for us . </s>
+Validation Beam Pred: <s> That was the big breakthrough for us . </s>
+
+Source: Ich <unk> Informationen . Ich bin <unk> .
+Target: <s> What I do is I organize information . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: I I 'm is I have information . I </s> . . . . . . . .
+Validation Greedy Pred: <s> I 'm <unk> information . I 'm <unk> . </s>
+Validation Beam Pred: <s> I <unk> information . I 'm <unk> . </s>
+
+Source: <unk> Menschen werden immer als <unk> beurteilt .
+Target: <s> Good - looking people are always judged as being more friendly . </s> <pad> <pad> <pad> <pad>
+Training Pred: <unk> people <unk> people are always judged as a <unk> endangered . </s> </s> : . . .
+Validation Greedy Pred: <s> <unk> people are always judged as a <unk> . </s>
+Validation Beam Pred: <s> <unk> people are always judged as a <unk> . </s>
+
+Source: <unk> : Das war toll . Danke .
+Target: <s> <unk> : That 's terrific . Thank you . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: <unk> : That was great . Thank you . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> <unk> : That was great . Thank you . </s>
+Validation Beam Pred: <s> <unk> : That was great . Thank you . </s>
+
+Source: Meine Reise um heute <unk> begann 1974 .
+Target: <s> My journey to coming here today started in 1974 . </s> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: My journey around today today today started 1974 1974 . </s> </s> : . . . . .
+Validation Greedy Pred: <s> My journey around today started in 1974 . </s>
+Validation Beam Pred: <s> My journey around today started in 1974 . </s>
+
+Source: Goldie Hawn : Danke . Fünf aussuchen ?
+Target: <s> Goldie Hawn : Thank you . <unk> five ? </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Goldie Hawn : Thank you . Five five ? </s> </s> : ? ? ? ? ? ?
+Validation Greedy Pred: <s> Goldie Hawn : Thank you . Five - five ? </s>
+Validation Beam Pred: <s> Goldie Hawn : Thank you . Five ? </s>
+
+Source: Aber so einen Lehrer findet man selten .
+Target: <s> But such a teacher is seldom found . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: But that a teacher is seldom found . </s> </s> : , . . . . . .
+Validation Greedy Pred: <s> But that 's what a teacher is seldom found . </s>
+Validation Beam Pred: <s> But that 's what a teacher is seldom found . </s>
+
+Source: Es ist tatsächlich 10 Bananen wert . "
+Target: <s> It is actually worth 10 bananas . " </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: It 's actually worth 10 bananas . " </s> </s> : . . . . . . .
+Validation Greedy Pred: <s> It 's actually worth 10 bananas . " </s>
+Validation Beam Pred: <s> It 's actually worth 10 bananas . " </s>
+
+Source: Wir müssen noch einmal über Gott nachdenken .
+Target: <s> We must think again about God . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: We need think again about God . </s> </s> : . . . . . . . .
+Validation Greedy Pred: <s> We need to think again about God . </s>
+Validation Beam Pred: <s> We need to think again about God . </s>
+
+Source: Dann könnten wir alle versuchen zu helfen .
+Target: <s> Then we could all be engaged in helping . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: Then we could all try trying . helping . </s> </s> : : . . . . .
+Validation Greedy Pred: <s> Then we could all try to help . </s>
+Validation Beam Pred: <s> Then we could all try to help . </s>
+
+Source: Bei TED ist alles wie bei <unk> .
+Target: <s> TED is all about patterns in the clouds . </s> <pad> <pad> <pad> <pad> <pad> <pad> <pad>
+Training Pred: At is everything like <unk> . TED <unk> . </s> </s> : . . . . . .
+Validation Greedy Pred: <s> At TED , everything is like <unk> . </s>
+Validation Beam Pred: <s> At TED , everything is like <unk> . </s>
+
+Source: Doch tatsächlich <unk> sich der Wandel bereits .
+Target: <s> But in fact , the change is actually already happening . </s> <pad> <pad> <pad> <pad> <pad>
+Training Pred: But actually fact , the change is already happening changing . </s> </s> : . . . .
+Validation Greedy Pred: <s> But actually , the change is already changing . </s>
+Validation Beam Pred: <s> But actually , the change is already changing . </s>
+
+Finished in 22.2399322986602
